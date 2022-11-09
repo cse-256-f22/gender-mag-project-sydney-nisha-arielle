@@ -1,35 +1,38 @@
+// array of all file names
+let file_array = []
+
+// array of all users
+let user_array = Object.keys(all_users)
+console.log(user_array)
+
 // ---- Define your dialogs  and panels here ----
-
-
 let displayEffectivePermissionPanel = define_new_effective_permissions("effectivePermissions", true);
 let selectNewUser = define_new_user_select_field("select-new-user", "select new user", function(selected_user) {
      $('#effectivePermissions').attr('username', selected_user);
-
 });
 
 $('#sidepanel').append(displayEffectivePermissionPanel)
- $('#sidepanel').append(selectNewUser)
+$('#sidepanel').append(selectNewUser)
 $('#effectivePermissions').attr('filepath', '/C/presentation_documents/important_file.txt')
 
 let createDialog = define_new_dialog("new-dialog", "");
 $('.perm_info').click(function(){
     createDialog.dialog('open')
-   let filepath = $('#effectivePermissions').attr('filepath');
-   let myUserObj = $('#effectivePermissions').attr('username');
-   let permissionToCheck = $(this).attr('permission_name');
+    let filepath = $('#effectivePermissions').attr('filepath');
+    let myUserObj = $('#effectivePermissions').attr('username');
+    let permissionToCheck = $(this).attr('permission_name');
 
-   let allowUserAction = allow_user_action(path_to_file[filepath], all_users[myUserObj], permissionToCheck, true);
-   console.log(allow_user_action(path_to_file[filepath], all_users[myUserObj], permissionToCheck, true))
-   $('#new-dialog').empty()
+    let allowUserAction = allow_user_action(path_to_file[filepath], all_users[myUserObj], permissionToCheck, true);
+    console.log(allow_user_action(path_to_file[filepath], all_users[myUserObj], permissionToCheck, true))
+    $('#new-dialog').empty()
     $('#new-dialog').append(get_explanation_text(allowUserAction));
-
 })
-
 
 // ---- Display file structure ----
 
 // (recursively) makes and returns an html element (wrapped in a jquery object) for a given file object
 function make_file_element(file_obj) {
+    file_array.push(file_obj.filename)
     let file_hash = get_full_path(file_obj)
 
     if(file_obj.is_folder) {
@@ -68,7 +71,14 @@ for(let root_file of root_files) {
     $( "#filestructure" ).append( file_elem);    
 }
 
+// create array of user permissions for each file
+for (let i = 0; i < file_array.length; i++) {
+   console.log(file_array[i])
+   for (let j = 0; j < user_array.length; j++) {
+    console.log(user_array[j])
 
+   }
+}
 
 // make folder hierarchy into an accordion structure
 $('.folder').accordion({
