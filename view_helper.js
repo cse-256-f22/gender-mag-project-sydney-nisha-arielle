@@ -505,7 +505,7 @@ function define_new_user_select_field(id_prefix, select_button_text, on_user_cha
 function get_explanation_text(explanation) {
     return `
     Action allowed?: ${explanation.is_allowed}; 
-    Because of
+    Because of 
     permission set for file: ${explanation.file_responsible?get_full_path(explanation.file_responsible):'N/A'}
     and for user: ${ explanation.ace_responsible ? get_user_name(explanation.ace_responsible.who) : 'N/A' }
     ${ explanation.text_explanation ? `(${explanation.text_explanation})`  : '' }

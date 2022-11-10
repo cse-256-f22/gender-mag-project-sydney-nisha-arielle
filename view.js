@@ -3,17 +3,18 @@ let file_array = []
 
 // array of all users
 let user_array = Object.keys(all_users)
+console.log("users")
 console.log(user_array)
 
 // ---- Define your dialogs  and panels here ----
-let displayEffectivePermissionPanel = define_new_effective_permissions("effectivePermissions", true);
-let selectNewUser = define_new_user_select_field("select-new-user", "select new user", function(selected_user) {
-     $('#effectivePermissions').attr('username', selected_user);
-});
+// let displayEffectivePermissionPanel = define_new_effective_permissions("effectivePermissions", true);
+// let selectNewUser = define_new_user_select_field("select-new-user", "select new user", function(selected_user) {
+//      $('#effectivePermissions').attr('username', selected_user);
+// });
 
-$('#sidepanel').append(displayEffectivePermissionPanel)
-$('#sidepanel').append(selectNewUser)
-$('#effectivePermissions').attr('filepath', '/C/presentation_documents/important_file.txt')
+// $('#sidepanel').append(displayEffectivePermissionPanel)
+// $('#sidepanel').append(selectNewUser)
+// $('#effectivePermissions').attr('filepath', '/C/presentation_documents/important_file.txt')
 
 let createDialog = define_new_dialog("new-dialog", "");
 $('.perm_info').click(function(){
@@ -74,9 +75,26 @@ for(let root_file of root_files) {
 // create array of user permissions for each file
 for (let i = 0; i < file_array.length; i++) {
    console.log(file_array[i])
+   let myUniqueId = "effectivePermissions" + Math.floor(Math.random() * 26)
+    let displayeeEffectivePermissionPanel = define_new_effective_permissions(myUniqueId, true);
+let selecteeNewUser = define_new_user_select_field(Math.floor(Math.random() * 26) + Date.now(), "select new user", function(selected3_user) {
+     $('#'+myUniqueId).attr('username', selected3_user);
+});
+$('#sidepanel').append(file_array[i])
+$('#sidepanel').append(displayeeEffectivePermissionPanel)
+$('#sidepanel').append(selecteeNewUser)
+
+//ISSUE HERE
+//CAN'T FIGURE OUT HOW TO GET THE FILEPATH if we just do filearray[i] then its not the complete path
+//but this is what it would be $('#effectivePermissions').attr('filepath', '/C/presentation_documents/important_file.txt') if we hardcoded it
+// let newFilepath = $('#' + myUniqueId).attr('filepath');
+
+// let createdFilepath = path_to_file[newFilepath]
+
+$('#'+myUniqueId).attr('filepath', createdFilepath)
    for (let j = 0; j < user_array.length; j++) {
     console.log(user_array[j])
-
+    
    }
 }
 
