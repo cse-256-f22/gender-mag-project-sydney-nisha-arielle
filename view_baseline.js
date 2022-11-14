@@ -320,7 +320,7 @@ let adv_contents = $(`#advdialog`).dialog({
     position: { my: "top", at: "top", of: $('#html-loc') },
     width: 700,
     height: 450,
-    modal: true,
+    modal: false,
     autoOpen: false,
     appendTo: "#html-loc",
     buttons: {
@@ -359,7 +359,7 @@ $('#adv_perm_inheritance').change(function(){
             - Click Remove to remove inherited parent permissions from this object<br/>
             - Click Cancel if you do not want to modify inheritance settings at this time.<br/>
         </div>`).dialog({ // TODO: don't create this dialog on the fly
-            modal: true,
+            modal: false,
             width: 400,
             appendTo: "#html-loc",
             position: { my: "top", at: "top", of: $('#html-loc') },
@@ -413,7 +413,7 @@ $('#adv_perm_replace_child_permissions').change(function(){
             This will replace explicitly defined permissions on all descendants of this object with inheritable permissions from ${file_obj.filename}.<br/>
             Do you wish to continue?
         </div>`).dialog({
-            modal: true,
+            modal: false,
             position: { my: "top", at: "top", of: $('#html-loc') },
             width: 400,
             buttons: {
@@ -473,7 +473,7 @@ $('#adv_owner_change_button').click(function() {
 let user_select_contents = $("#user_select_dialog").dialog({
     height: 450,
     width: 400,
-    modal: true,
+    modal: false,
     autoOpen: false,
     appendTo: "#html-loc",
     position: { my: "top", at: "top", of: $('#html-loc') },
@@ -503,7 +503,7 @@ let user_select_contents = $("#user_select_dialog").dialog({
 
 
 let perm_entry_dialog = $('#permentry').dialog({
-    modal: true,
+    modal: false,
     autoOpen: false,
     height: 500,
     width: 400,
@@ -614,7 +614,7 @@ If you complete the task early, you will also be able to submit the answer as so
 <b style="color:red">In order to get your HIT approved, You MUST use the file interface to try to complete the given task.</b> 
 You will still get paid if you don't finish the task, but you have to try.
 </div>`).dialog({
-    modal:true,
+    modal:false,
     width: 700,
     //height: 350,
     appendTo: "#html-loc",
@@ -700,7 +700,7 @@ $(`<div id="survey-dialog" title="Survey">
     </button>
     </form>
 </div>`).dialog({
-    modal:true,
+    modal:false,
     width: 700,
     height: 500,
     autoOpen: show_starter_dialogs,

@@ -82,8 +82,9 @@ function define_new_dialog(id_prefix, title='', options = {}){
     let default_options = {
         appendTo: "#html-loc",
         autoOpen: false,
-        modal: true,
+        modal: false,
         position: { my: "top", at: "top", of: $('#html-loc') },
+   
     }
     
     // add default options - do not override ones that are already specified.
@@ -515,7 +516,11 @@ function get_explanation_text(explanation) {
 //---- some universal HTML set-up so you don't have to do it in each wrapper.html ----
 $('#filestructure').css({
     'display':'inline-block',
-    'width':'49%',
-    'vertical-align': 'top'
+    'width':'30%',
+    'vertical-align': 'top',
+    'padding': '2em',
+    'position': '-webkit-sticky',
+    'position': 'sticky',
+    'top': '0'
 })
-$('#filestructure').after('<div id="sidepanel" style="display:inline-block;width:49%"></div>')
+$('#filestructure').after('<div id="sidepanel" style="display:inline-block;width:60%"></div>')
