@@ -646,36 +646,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
         }
         permission_container.append(row)
     }
-
-    // function for updating the grid
-    // let update_perm_grid_contents = function(){
-    //     // get current settings:
-    //     let username = effective_container.attr('username')
-    //     let filepath = effective_container.attr('filepath')
-    //     // if both properties are set correctly:
-    //     if( username && username.length > 0 && (username in all_users) &&
-    //         filepath && filepath.length > 0 && (filepath in path_to_file)) {
-    //         //clear out the checkboxes:
-    //         effective_container.find(`.effectivecheckcell`).empty()
-
-    //         // Set checkboxes correctly for given file and user:
-    //         for(let p of which_permissions) {
-    //             let p_id = p.replace(/[ \/]/g, '_') //get jquery-readable id
-    //             // if the actual model would allow an action with permission
-    //             if( allow_user_action(path_to_file[filepath], all_users[username], p)) {
-    //                 // This action is allowed. Find the checkbox cell and put a checkbox there.
-    //                 let this_checkcell = effective_container.find(`#${id_prefix}_checkcell_${p_id}`)
-    //                 this_checkcell.append(`<span id="${id_prefix}_checkbox_${p_id}" class="oi oi-check"/>`)
-    //             }
-    //         }
-    //     }
-    // }
-
-    // // call update_effective_contents when either username or filepath changes:
-    // define_attribute_observer(permission_container, 'username', update_perm_grid_contents)
-    // define_attribute_observer(permission_container, 'filepath', update_perm_grid_contents)
-    // console.log(document.querySelectorAll('[id^="permdialog_grouped_permissions_"]'))
-    // console.log(permission_container)
+    
     $('#sidepanel').append(permission_container)
 }
 
