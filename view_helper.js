@@ -523,4 +523,6 @@ $('#filestructure').css({
     'position': 'sticky',
     'top': '0'
 })
+
+
 $('#filestructure').after('<div id="sidepanel" style="display:inline-block;width:60%"></div>')

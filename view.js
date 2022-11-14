@@ -90,7 +90,7 @@ for (let i = 0; i < file_array.length; i++) {
     });
 
     let fileNameDiv = $(`<div id="file_name"></div>`)
-    fileNameDiv.append(file)
+    fileNameDiv.append("File: " + file)
     
     $('#sidepanel').append(fileNameDiv)
     // $('#sidepanel').append(displayeeEffectivePermissionPanel)
@@ -160,6 +160,8 @@ for (let i = 0; i < file_array.length; i++) {
     $('#sidepanel').append(effective_container)
 }
 
+$('#instructions').append("Instructions: Please make all permissions changes by clicking the lock icon below." + 
+" Compare with original permissions listed in the tables to the right")
 // make folder hierarchy into an accordion structure
 $('.folder').accordion({
     collapsible: true,
