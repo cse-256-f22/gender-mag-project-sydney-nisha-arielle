@@ -1,10 +1,13 @@
 // array of all file names
 let file_array = []
 
+//array of all file paths
+let file_paths = []
+
 // array of all users
 let user_array = Object.keys(all_users)
-console.log("users")
-console.log(user_array)
+// console.log("users")
+// console.log(user_array)
 
 // ---- Define your dialogs  and panels here ----
 // let displayEffectivePermissionPanel = define_new_effective_permissions("effectivePermissions", true);
@@ -24,7 +27,7 @@ $('.perm_info').click(function(){
     let permissionToCheck = $(this).attr('permission_name');
 
     let allowUserAction = allow_user_action(path_to_file[filepath], all_users[myUserObj], permissionToCheck, true);
-    console.log(allow_user_action(path_to_file[filepath], all_users[myUserObj], permissionToCheck, true))
+    // console.log(allow_user_action(path_to_file[filepath], all_users[myUserObj], permissionToCheck, true))
     $('#new-dialog').empty()
     $('#new-dialog').append(get_explanation_text(allowUserAction));
 })
@@ -34,7 +37,9 @@ $('.perm_info').click(function(){
 // (recursively) makes and returns an html element (wrapped in a jquery object) for a given file object
 function make_file_element(file_obj) {
     file_array.push(file_obj.filename)
+
     let file_hash = get_full_path(file_obj)
+    file_paths.push(file_hash)
 
     if(file_obj.is_folder) {
         let folder_elem = $(`<div class='folder' id="${file_hash}_div">
@@ -74,28 +79,75 @@ for(let root_file of root_files) {
 
 // create array of user permissions for each file
 for (let i = 0; i < file_array.length; i++) {
-   console.log(file_array[i])
-   let myUniqueId = "effectivePermissions" + Math.floor(Math.random() * 26)
+    console.log(file_array[i])
+    let file = file_array[i]
+    filepath = file_paths[i]
+
+    let myUniqueId = "effectivePermissions" + Math.floor(Math.random() * 26)
+    id_prefix = 'perm' + Math.floor(Math.random() * 26)
     let displayeeEffectivePermissionPanel = define_new_effective_permissions(myUniqueId, true);
-let selecteeNewUser = define_new_user_select_field(Math.floor(Math.random() * 26) + Date.now(), "select new user", function(selected3_user) {
-     $('#'+myUniqueId).attr('username', selected3_user);
-});
-$('#sidepanel').append(file_array[i])
-$('#sidepanel').append(displayeeEffectivePermissionPanel)
-$('#sidepanel').append(selecteeNewUser)
+    let selecteeNewUser = define_new_user_select_field(Math.floor(Math.random() * 26) + Date.now(), "select new user", function(selected3_user) {
+        $('#'+myUniqueId).attr('username', selected3_user);
+    });
+    $('#sidepanel').append(file)
+    // $('#sidepanel').append(displayeeEffectivePermissionPanel)
+    // $('#sidepanel').append(selecteeNewUser)
 
-//ISSUE HERE
-//CAN'T FIGURE OUT HOW TO GET THE FILEPATH if we just do filearray[i] then its not the complete path
-//but this is what it would be $('#effectivePermissions').attr('filepath', '/C/presentation_documents/important_file.txt') if we hardcoded it
-// let newFilepath = $('#' + myUniqueId).attr('filepath');
+    let effective_container = $(`<div id="${id_prefix}" class="ui-widget-content" style="overflow-y:scroll"></div>`)
 
-// let createdFilepath = path_to_file[newFilepath]
+    let which_permissions = Object.values(permissions)
 
-$('#'+myUniqueId).attr('filepath', createdFilepath)
-   for (let j = 0; j < user_array.length; j++) {
-    console.log(user_array[j])
-    
-   }
+    let perm_id = 'permission' + Math.floor(Math.random() * 26)
+    let perm_str = "Permissions: "
+    let perm_row = $(`
+    <tr id="${id_prefix}_row_${perm_id}" permission_name="${perm_str}" permission_id="${perm_id}">
+        <td id="${id_prefix}_checkcell_${perm_id}" class="effectivecheckcell" width="100px"></td>
+        <td id="${id_prefix}_name_${perm_id}" class="effective_perm_name">${perm_str}</td>
+    </tr>
+    `)
+
+    for (x = 0; x < which_permissions.length; x++) {
+        perm_row.append(`
+        <td id="${id_prefix}_${perm_id}_info_cell" width="100px" style="text-align:right">
+            <span id="${id_prefix}_${perm_id}_info_icon" class="effective_perm_name" setting_container_id="${id_prefix}"/>
+            <td> ${which_permissions[x]} </td>`)
+    }
+    effective_container.append(perm_row)
+
+    for (let j = 0; j < user_array.length; j++) {
+        let user = user_array[j]
+
+        let user_id = user.replace(/[ \/]/g, '_') //get jquery-readable id
+        let row = $(`
+        <tr id="${id_prefix}_row_${user_id}" permission_name="${user}" permission_id="${user_id}">
+            <td id="${id_prefix}_checkcell_${user_id}" class="effectivecheckcell" width="100px"></td>
+            <td id="${id_prefix}_name_${user_id}" class="effective_perm_name">${user}</td>
+        </tr>
+        `)
+
+        for (let k = 0; k < which_permissions.length; k++){
+            
+            let permission = which_permissions[k]
+            let allowUserAction1 = allow_user_action(path_to_file[filepath], all_users[user], permission, true);
+            
+            let allow_id = user.replace(/[ \/]/g, '_') //get jquery-readable id
+
+            if (allowUserAction1.is_allowed == true) {
+                row.append(`
+                    <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:right">
+                    <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                    </td>`)
+            }
+            else {
+                row.append(`
+                    <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:right">
+                    <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                    </td>`)
+            }
+        }
+        effective_container.append(row)
+    }
+    $('#sidepanel').append(effective_container)
 }
 
 // make folder hierarchy into an accordion structure
