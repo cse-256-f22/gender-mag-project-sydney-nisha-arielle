@@ -500,6 +500,185 @@ function define_new_user_select_field(id_prefix, select_button_text, on_user_cha
     return sel_section
 }
 
+
+function make_permission_grids(file, file_path, which_permissions, perm_groups, user_array) {
+    let fileNameDiv = $(`<div id="file_name"></div>`)
+    fileNameDiv.append("File: " + file)
+    $('#sidepanel').append(fileNameDiv)
+
+    id_prefix = 'perm' + Math.floor(Math.random() * 26)
+    let permission_container = $(`<div id="${id_prefix}" class="ui-widget-content" style="overflow-y:scroll"></div>`)
+    permission_container.attr('file', file)
+
+    let perm_id = 'permission' + Math.floor(Math.random() * 26)
+    let perm_row = $(`
+    <tr id="${id_prefix}_row_${perm_id}" permission_id="${perm_id}">
+        <td id="${id_prefix}_name_${perm_id}" class="effective_perm_name">  </td>
+    </tr>
+    `)
+
+    // each column of the table
+    for (x = perm_groups.length-1; x >=0; x--) {
+        perm_row.append(`
+        <td id="${id_prefix}_${perm_id}_info_cell" width="100px" style="text-align:center">
+            <span id="${id_prefix}_${perm_id}_info_icon" class="effective_perm_name" setting_container_id="${id_prefix}"/>
+            ${perm_groups[x]}  
+        </td>`)
+    }
+    // append row of permissions to table
+    permission_container.append(perm_row)
+
+    // loop through each user and create row with column for each permissions
+    for (let j = 0; j < user_array.length; j++) {
+
+        // create new row for each user
+        let user = user_array[j]
+        let user_id = user.replace(/[ \/]/g, '_') 
+        let row = $(`
+            <tr id="${id_prefix}_row_${user_id}" permission_name="${user}" permission_id="${user_id}">
+                <td id="${id_prefix}_name_${user_id}" class="effective_perm_name"> <b> ${user} </b> </td>
+            </tr>
+        `)
+        permission_container.attr('user', user)
+
+        // initialize array to store boolean permission values
+        perm_array = []
+
+        // loop through each effective permission to get a boolean array for each user
+        for (let k = 0; k < which_permissions.length; k++){
+            let allowUserAction1 = allow_user_action(path_to_file[file_path], all_users[user], which_permissions[k], true);
+            perm_array.push(allowUserAction1.is_allowed)
+        }
+
+        let allow_id = user.replace(/[ \/]/g, '_') 
+        let special_perm = true
+
+        // READ PERMISSION GROUP
+        if(perm_array[1] == true && perm_array[2] == true && perm_array[3] == true & perm_array[10] == true) {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            special_perm = false
+        }
+        else {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+        }
+
+        // WRITE PERMISSIONS GROUP
+        if(perm_array[4] == true && perm_array[5] == true && perm_array[6] == true && perm_array[7] == true) {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            special_perm = false
+        }
+        else {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+        }
+
+        // READ_EXECUTE PERMISSION GROUP
+        if(perm_array[0] == true && perm_array[1] == true && perm_array[2] == true && perm_array[3] == true & perm_array[10] == true) {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            special_perm = false
+        }
+        else {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+        }
+
+        // MODIFY PERMISSION GROUP
+        if(perm_array[4] == true && perm_array[5] == true && perm_array[6] == true && perm_array[7] == true && perm_array[8] == true && perm_array[9] == true) {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            special_perm = false
+        }
+        else {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+        }
+
+        // function to determine if elements in an array are true
+        const isTrue = (currentValue) => currentValue == true;
+
+        // FULL CONTROL PERMISSION GROUP
+        if(perm_array.every(isTrue)){
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            special_perm = false
+        }
+        else {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+        }
+
+        // SPECIAL PERMISSIONS
+        if(special_perm == true && perm_array.some(isTrue)){
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+        }
+        else {
+            row.append(`
+                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
+                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+        }
+        permission_container.append(row)
+    }
+
+    // function for updating the grid
+    // let update_perm_grid_contents = function(){
+    //     // get current settings:
+    //     let username = effective_container.attr('username')
+    //     let filepath = effective_container.attr('filepath')
+    //     // if both properties are set correctly:
+    //     if( username && username.length > 0 && (username in all_users) &&
+    //         filepath && filepath.length > 0 && (filepath in path_to_file)) {
+    //         //clear out the checkboxes:
+    //         effective_container.find(`.effectivecheckcell`).empty()
+
+    //         // Set checkboxes correctly for given file and user:
+    //         for(let p of which_permissions) {
+    //             let p_id = p.replace(/[ \/]/g, '_') //get jquery-readable id
+    //             // if the actual model would allow an action with permission
+    //             if( allow_user_action(path_to_file[filepath], all_users[username], p)) {
+    //                 // This action is allowed. Find the checkbox cell and put a checkbox there.
+    //                 let this_checkcell = effective_container.find(`#${id_prefix}_checkcell_${p_id}`)
+    //                 this_checkcell.append(`<span id="${id_prefix}_checkbox_${p_id}" class="oi oi-check"/>`)
+    //             }
+    //         }
+    //     }
+    // }
+
+    // // call update_effective_contents when either username or filepath changes:
+    // define_attribute_observer(permission_container, 'username', update_perm_grid_contents)
+    // define_attribute_observer(permission_container, 'filepath', update_perm_grid_contents)
+    // console.log(document.querySelectorAll('[id^="permdialog_grouped_permissions_"]'))
+    // console.log(permission_container)
+    $('#sidepanel').append(permission_container)
+}
+
 //---- misc. ----
 
 // Get a (very simple) text representation of a permissions explanation

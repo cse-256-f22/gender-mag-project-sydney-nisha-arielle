@@ -1,11 +1,17 @@
 // array of all file names
 let file_array = []
 
-//array of all file paths
+// array of all file paths
 let file_paths = []
 
 // array of all users
 let user_array = Object.keys(all_users)
+
+// array of all effective permissions
+let which_permissions = Object.values(permissions)
+
+// array for permission groups
+let perm_groups = ['Special_Permissions', 'Full_Control', 'Modify', 'Read_Execute', 'Write', 'Read']
 
 
 // ---- Define your dialogs  and panels here ----
@@ -26,7 +32,6 @@ $('.perm_info').click(function(){
     let permissionToCheck = $(this).attr('permission_name');
 
     let allowUserAction = allow_user_action(path_to_file[filepath], all_users[myUserObj], permissionToCheck, true);
-    // console.log(allow_user_action(path_to_file[filepath], all_users[myUserObj], permissionToCheck, true))
     $('#new-dialog').empty()
     $('#new-dialog').append(get_explanation_text(allowUserAction));
 })
@@ -76,89 +81,25 @@ for(let root_file of root_files) {
     $( "#filestructure" ).append( file_elem);    
 }
 
-// create array of user permissions for each file
-for (let i = 0; i < file_array.length; i++) {
-    console.log(file_array[i])
-    let file = file_array[i]
-    filepath = file_paths[i]
-
-    let myUniqueId = "effectivePermissions" + Math.floor(Math.random() * 26)
-    id_prefix = 'perm' + Math.floor(Math.random() * 26)
-    let displayeeEffectivePermissionPanel = define_new_effective_permissions(myUniqueId, true);
-    let selecteeNewUser = define_new_user_select_field(Math.floor(Math.random() * 26) + Date.now(), "select new user", function(selected3_user) {
-        $('#'+myUniqueId).attr('username', selected3_user);
-    });
-
-    let fileNameDiv = $(`<div id="file_name"></div>`)
-    fileNameDiv.append("File: " + file)
-    
-    $('#sidepanel').append(fileNameDiv)
-    // $('#sidepanel').append(displayeeEffectivePermissionPanel)
-    // $('#sidepanel').append(selecteeNewUser)
-
-    let effective_container = $(`<div id="${id_prefix}" class="ui-widget-content" style="overflow-y:scroll"></div>`)
-
-    let which_permissions = Object.values(permissions)
-
-    let perm_id = 'permission' + Math.floor(Math.random() * 26)
-    let perm_str = "Permissions: "
-    //this is each row of the table
-    let perm_row = $(`
-    <tr id="${id_prefix}_row_${perm_id}" permission_name="${perm_str}" permission_id="${perm_id}">
-        <td id="${id_prefix}_checkcell_${perm_id}" class="effectivecheckcell" width="100px"></td>
-        <td id="${id_prefix}_name_${perm_id}" class="effective_perm_name">${perm_str}</td>
-    </tr>
-    `)
-
-    //each column of the table
-    for (x = which_permissions.length-1; x >=0; x--) {
-        perm_row.append(`
-        <td id="${id_prefix}_${perm_id}_info_cell" width="100px" style="text-align:center">
-        <span id="${id_prefix}_${perm_id}_info_icon" class="effective_perm_name" setting_container_id="${id_prefix}"/>
-             ${which_permissions[x]}  
-             </td>`)
-    }
-    effective_container.append(perm_row)
-
-    for (let j = 0; j < user_array.length; j++) {
-        let user = user_array[j]
-
-        let user_id = user.replace(/[ \/]/g, '_') //get jquery-readable id
- 
-        let row = $(`
-        <tr id="${id_prefix}_row_${user_id}" permission_name="${user}" permission_id="${user_id}">
-            <td id="${id_prefix}_checkcell_${user_id}" class="effectivecheckcell" width="100px"></td>
-            <td id="${id_prefix}_name_${user_id}" class="effective_perm_name">${user}</td>
-        </tr>
-        `)
-
-        for (let k = 0; k < which_permissions.length; k++){
-            
-            let permission = which_permissions[k]
-            let allowUserAction1 = allow_user_action(path_to_file[filepath], all_users[user], permission, true);
-            
-            let allow_id = user.replace(/[ \/]/g, '_') //get jquery-readable id
-
-            if (allowUserAction1.is_allowed == true) {
-                row.append(`
-                    <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                    <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
-                    </td>`)
-            }
-            else {
-                row.append(`
-                    <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                    <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
-                    </td>`)
-            }
-        }
-        effective_container.append(row)
-    }
-    
-    // grouped_permissions = define_grouped_permission_checkboxes('permdialog_grouped_permissions')
-    // $('#sidepanel').append(grouped_permissions)
-    $('#sidepanel').append(effective_container)
+// make tables for the permissions of each user for each file
+$('#sidepanel').empty()
+for (let i = 0; i < file_array.length; i++){
+    make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, user_array)
 }
+
+let checkboxes = document.querySelectorAll('[id^="perm-dialog-ok-button"]')
+for(let y = 0; y < checkboxes.length; y++) {
+    checkboxes[y].addEventListener("click", function() {
+        console.log("clicked box")
+        $('#sidepanel').empty()
+        for (let i = 0; i < file_array.length; i++){
+            make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, user_array)
+        }
+    })
+}
+
+let group_perm = define_grouped_permission_checkboxes("new-group-perm-check-")
+$('#sidepanel').append(group_perm)
 
 $('#instructions').append("Instructions: Please make all permissions changes by clicking the lock icon below." + 
 " Compare with original permissions listed in the tables to the right")
