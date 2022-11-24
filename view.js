@@ -50,6 +50,7 @@ function make_file_element(file_obj) {
             <h3 id="${file_hash}_header">
                 <span class="oi oi-folder" id="${file_hash}_icon"/> ${file_obj.filename} 
                 <button class="ui-button ui-widget ui-corner-all permbutton" path="${file_hash}" id="${file_hash}_permbutton"> 
+                <p> EDIT PERMISSIONS </p>
                     <span class="oi oi-lock-unlocked" id="${file_hash}_permicon"/> 
                 </button>
             </h3>
@@ -70,6 +71,7 @@ function make_file_element(file_obj) {
         return $(`<div class='file'  id="${file_hash}_div">
             <span class="oi oi-file" id="${file_hash}_icon"/> ${file_obj.filename}
             <button class="ui-button ui-widget ui-corner-all permbutton" path="${file_hash}" id="${file_hash}_permbutton"> 
+            <p> EDIT PERMISSIONS </p>
                 <span class="oi oi-lock-unlocked" id="${file_hash}_permicon"/> 
             </button>
         </div>`)
@@ -98,6 +100,7 @@ for(let y = 0; y < checkboxes.length; y++) {
     })
 }
 
+
 let group_perm = define_grouped_permission_checkboxes("new-group-perm-check-")
 $('#sidepanel').append(group_perm)
 
@@ -109,6 +112,64 @@ $('.folder').accordion({
     heightStyle: 'content'
 }) // TODO: start collapsed and check whether read permission exists before expanding?
 
+$('#instructions1').append("<b> <u> Look at all of the direct (not inherited) permissions that are set on this file for this user OR for any groups that this user is part of (e.g. administrators)");
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+$('#instructions1').append("       If any of these are set to deny permission, then permission is denied.");
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+$('#instructions1').append("       Or, if any of these are set to allow the permission, then the action is allowed to happen.");
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+$('#instructions1').append("<b> <u> If:");
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+$('#instructions1').append("        there were no direct permissions for this [user, action] combination,");
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+
+$('#instructions1').append("        AND inheritance is turned on for this file/folder ");
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+
+$('#instructions1').append(".. Repeat the process using the permissions for the parent folder.");
+
+
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+$('#instructions1').append("<b> <u> If:");
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+$('#instructions1').append("        you have exhausted the options available via inheritance");
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+
+$('#instructions1').append("        AND still have not found any relevant permission settings, ");
+$('#instructions1').append("<br>");
+// $('#instructions1').append("<br>");
+
+$('#instructions1').append("<b> .. then permission is denied.");
+
+var pdefbutton = document.createElement("button");
+pdefbutton.innerHTML = "What is Precedence?";
+pdefbutton.style = "font-size: 15px; background-color: white; color: black; padding: 6px;  border-color: black";
+pdefbutton.onclick = function () {
+  alert("Precedence: Direct permissions take precedence over inherited permissions (if any). Inherited permissions at a 'closer' level to the file in question take precedence over ones that are 'further' (e.g. parent permissions take precedence over grandparent permissions). Within the same inheritance level, 'deny' permissions take precedence over 'allow' permissions. Within the same inheritance level, permissions set for users and groups have the same priority; neither takes priority over the other.");
+};
+// document.body.appendChild(btn);
+$('#instructions2').append(pdefbutton);
+$('#instructions2').append("<br>");
+$('#instructions2').append("<br>");
+
+
+var idefbutton = document.createElement("button");
+idefbutton.innerHTML = "What is Inheritance?";
+idefbutton.style = "font-size: 15px; background-color: white; color: black; padding: 6px;  border-color: black";
+idefbutton.onclick = function () {
+  alert("Inheritance: A file/folder may inherit permissions from its parent folder. By default, this inheritance is on for all files/folders. Yet, it is possible to turn off inheritance for a particular file/folder (which makes it stop inheriting permissions from its parent).");
+};
+// document.body.appendChild(btn);
+$('#instructions2').append(idefbutton);
 
 // -- Connect File Structure lock buttons to the permission dialog --
 

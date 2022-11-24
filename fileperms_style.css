@@ -69,8 +69,26 @@ table, th, td {
 #instructions {
     font-size: 1.2rem;
     font-weight: bold;
+    font-family:Arial, Helvetica, sans-serif;
 
     background-color: rgba(255, 181, 181, 0.427);
     padding: 10px;
+}
+
+#instructions1 {
+    font-size: 1.2rem;
+    font-family:Arial, Helvetica, sans-serif;
+
+    background-color: rgba(129, 229, 243, 0.427);
+    padding: 10px;
+}
+
+#instructions2 {
+    font-size: 1.2rem;
+    font-family:Arial, Helvetica, sans-serif;
+
+    background-color: rgba(223, 174, 255, 0.427);
+    padding: 10px;
+    text-align: center;
 }
 
