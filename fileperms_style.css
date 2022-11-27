@@ -92,3 +92,24 @@ table, th, td {
     text-align: center;
 }
 
+
+#sideBySide {
+    width: 100%;
+    overflow: hidden; /* add this to contain floated children */
+}
+#fileAccordionDiv {
+    width: 25%;
+    float:left; /* add this */
+    margin-right: 20px;
+    margin-top: 10px;
+
+}
+#sidepanel {
+    float: left; /* add this */
+    margin: 10px;
+
+}
+#inner-body {
+    padding-bottom: 400px;
+}
+

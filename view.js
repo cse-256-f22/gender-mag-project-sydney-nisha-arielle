@@ -101,7 +101,7 @@ function make_file_element(file_obj) {
 
 for(let root_file of root_files) {
     let file_elem = make_file_element(root_file)
-    $( "#filestructure" ).append( file_elem);    
+    $( "#fileAccordionDiv" ).append( file_elem);    
 }
 
 // make tables for the permissions of each user for each file
@@ -277,7 +277,7 @@ $('#instructions1').append("<b> .. then permission is denied.");
 
 var pdefbutton = document.createElement("button");
 pdefbutton.innerHTML = "What is Precedence?";
-pdefbutton.style = "font-size: 15px; background-color: white; color: black; padding: 6px;  border-color: black";
+pdefbutton.style = "font-size: 15px; margin-right: 10px; background-color: white; color: black; padding: 6px;  border-color: black";
 pdefbutton.onclick = function () {
     // var myDialog = document.createElement("dialog");
     // document.body.appendChild(myDialog)
@@ -288,13 +288,13 @@ pdefbutton.onclick = function () {
 };
 // document.body.appendChild(btn);
 $('#instructions2').append(pdefbutton);
-$('#instructions2').append("<br>");
-$('#instructions2').append("<br>");
+//$('#instructions2').append("<br>");
+// $('#instructions2').append("<br>");
 
 
 var idefbutton = document.createElement("button");
 idefbutton.innerHTML = "What is Inheritance?";
-idefbutton.style = "font-size: 15px; background-color: white; color: black; padding: 6px;  border-color: black";
+idefbutton.style = "font-size: 15px; background-color: white; color: black; padding: 6px;  border-color: black;";
 idefbutton.onclick = function () {
   alert("Inheritance: A file/folder may inherit permissions from its parent folder. By default, this inheritance is on for all files/folders. Yet, it is possible to turn off inheritance for a particular file/folder (which makes it stop inheriting permissions from its parent).");
 };
