@@ -33,7 +33,7 @@ table, th, td {
 }
 
 #mturk-top-banner-drop-down-content {
-    position: absolute;
+    position: fixed;
     width: 99%;
     bottom: 0px;
     top:unset;

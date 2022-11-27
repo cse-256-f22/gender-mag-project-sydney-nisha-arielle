@@ -11,7 +11,7 @@ let user_array = Object.keys(all_users)
 let which_permissions = Object.values(permissions)
 
 // array for permission groups
-let perm_groups = ['Special_Permissions', 'Full_Control', 'Modify', 'Read_Execute', 'Write', 'Read']
+let perm_groups = ['Full_Control', 'Modify', 'Read_Execute', 'Write', 'Read']
 
 
 // ---- Define your dialogs  and panels here ----
@@ -50,7 +50,7 @@ function make_file_element(file_obj) {
             <h3 id="${file_hash}_header">
                 <span class="oi oi-folder" id="${file_hash}_icon"/> ${file_obj.filename} 
                 <button class="ui-button ui-widget ui-corner-all permbutton" path="${file_hash}" id="${file_hash}_permbutton"> 
-                <p> EDIT PERMISSIONS </p>
+                    <p> EDIT PERMISSIONS </p>
                     <span class="oi oi-lock-unlocked" id="${file_hash}_permicon"/> 
                 </button>
             </h3>
@@ -84,25 +84,101 @@ for(let root_file of root_files) {
 }
 
 // make tables for the permissions of each user for each file
+cur_state = []
 $('#sidepanel').empty()
 for (let i = 0; i < file_array.length; i++){
+    file_state = get_cur_file_perm(file_paths[i])
+    cur_state.push(file_state)
     make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, user_array)
 }
 
 let checkboxes = document.querySelectorAll('[id^="perm-dialog-ok-button"]')
 for(let y = 0; y < checkboxes.length; y++) {
-    checkboxes[y].addEventListener("click", function() {
-        console.log("clicked box")
+    checkboxes[y].addEventListener("click", function handleClick(event) {
         $('#sidepanel').empty()
         for (let i = 0; i < file_array.length; i++){
-            make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, user_array)
+            make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, user_array, cur_state[i])
         }
+        // cur_state = []
+        // for (let i = 0; i < file_array.length; i++) {
+        //     cur_state.push(get_cur_file_perm(file_paths[i]))
+        // }
     })
 }
 
+function get_cur_file_perm(file_path) {
+    let cur_state = []
+    for (let j = 0; j < user_array.length; j++) {
+        user = user_array[j]
+        let perm_array = []
+        for (let k = 0; k < which_permissions.length; k++){
+            let allowUserAction1 = allow_user_action(path_to_file[file_path], all_users[user], which_permissions[k], true);
+            perm_array.push(allowUserAction1.is_allowed)
+        }
+        user_arr = []
 
-let group_perm = define_grouped_permission_checkboxes("new-group-perm-check-")
-$('#sidepanel').append(group_perm)
+        // READ PERMISSION GROUP
+        if(perm_array[1] == true && perm_array[2] == true && perm_array[3] == true & perm_array[10] == true) {
+            user_arr.push(true)
+            special_perm = false
+        }
+        else {
+            user_arr.push(false)
+        }
+
+        // WRITE PERMISSIONS GROUP
+        if(perm_array[4] == true && perm_array[5] == true && perm_array[6] == true && perm_array[7] == true) {
+            user_arr.push(true)
+            special_perm = false
+        }
+        else {
+            user_arr.push(false)
+        }
+
+        // READ_EXECUTE PERMISSION GROUP
+        if(perm_array[0] == true && perm_array[1] == true && perm_array[2] == true && perm_array[3] == true & perm_array[10] == true) {
+            user_arr.push(true)
+            special_perm = false
+        }
+        else {
+            user_arr.push(false)
+        }
+
+        // MODIFY PERMISSION GROUP
+        if(perm_array[4] == true && perm_array[5] == true && perm_array[6] == true && perm_array[7] == true && perm_array[8] == true && perm_array[9] == true) {
+            user_arr.push(true)
+            special_perm = false
+        }
+        else {
+            user_arr.push(false)
+        }
+
+        // function to determine if elements in an array are true
+        const isTrue = (currentValue) => currentValue == true;
+
+        // FULL CONTROL PERMISSION GROUP
+        if(perm_array.every(isTrue)){
+            user_arr.push(true)
+            special_perm = false
+        }
+        else {
+            user_arr.push(false)
+        }
+
+        // SPECIAL PERMISSIONS
+        // if(special_perm == true && perm_array.some(isTrue)){
+        //     user_arr.push(true)
+        // }
+
+        // else {
+        //     user_arr.push(false)
+        // }
+
+        cur_state.push(user_arr)
+    }
+    
+    return cur_state
+}
 
 $('#instructions').append("Instructions: Please make all permissions changes by clicking the lock icon below." + 
 " Compare with original permissions listed in the tables to the right")
@@ -154,6 +230,11 @@ var pdefbutton = document.createElement("button");
 pdefbutton.innerHTML = "What is Precedence?";
 pdefbutton.style = "font-size: 15px; background-color: white; color: black; padding: 6px;  border-color: black";
 pdefbutton.onclick = function () {
+    // var myDialog = document.createElement("dialog");
+    // document.body.appendChild(myDialog)
+    // var text = document.createTextNode("This is a dialog window");
+    // myDialog.appendChild(text);
+    // myDialog.showModal();
   alert("Precedence: Direct permissions take precedence over inherited permissions (if any). Inherited permissions at a 'closer' level to the file in question take precedence over ones that are 'further' (e.g. parent permissions take precedence over grandparent permissions). Within the same inheritance level, 'deny' permissions take precedence over 'allow' permissions. Within the same inheritance level, permissions set for users and groups have the same priority; neither takes priority over the other.");
 };
 // document.body.appendChild(btn);

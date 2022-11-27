@@ -501,7 +501,8 @@ function define_new_user_select_field(id_prefix, select_button_text, on_user_cha
 }
 
 
-function make_permission_grids(file, file_path, which_permissions, perm_groups, user_array) {
+changed_permissions = []
+function make_permission_grids(file, file_path, which_permissions, perm_groups, user_array, cur_state = null) {
     let fileNameDiv = $(`<div id="file_name"></div>`)
     fileNameDiv.append("File: " + file)
     $('#sidepanel').append(fileNameDiv)
@@ -525,6 +526,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
             ${perm_groups[x]}  
         </td>`)
     }
+
     // append row of permissions to table
     permission_container.append(perm_row)
 
@@ -551,66 +553,137 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
         }
 
         let allow_id = user.replace(/[ \/]/g, '_') 
-        let special_perm = true
+        let user_state = null
+        if(cur_state != null){
+            user_state = cur_state[j]
+        }
 
         // READ PERMISSION GROUP
         if(perm_array[1] == true && perm_array[2] == true && perm_array[3] == true & perm_array[10] == true) {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+            if(user_state != null && user_state[0] == false) {
+                changed_permissions.push([file, user, 'read'])
+                row.append(`
+                <td id="${file}_${allow_id}_read" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
                 </td>`)
-            special_perm = false
+            }
+            else{
+                row.append(`
+                <td id="${file}_${allow_id}_read" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
         else {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+            if(user_state != null && user_state[0] == true) {
+                changed_permissions.push([file, user, 'read'])
+                row.append(`
+                <td id="${file}_${allow_id}_read" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
                 </td>`)
+            }
+            else {
+                row.append(`
+                <td id="${file}_${allow_id}_read" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
 
         // WRITE PERMISSIONS GROUP
         if(perm_array[4] == true && perm_array[5] == true && perm_array[6] == true && perm_array[7] == true) {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+            if(user_state != null && user_state[1] == false) {
+                changed_permissions.push([file, user, 'write'])
+                row.append(`
+                <td id="${file}_${allow_id}_write" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
                 </td>`)
-            special_perm = false
+            }
+            else {
+                row.append(`
+                <td id="${file}_${allow_id}_write" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
         else {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+            if(user_state != null && user_state[1] == true) {
+                changed_permissions.push([file, user, 'write'])
+                row.append(`
+                <td id="${file}_${allow_id}_write" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
                 </td>`)
+            }
+            else {
+                row.append(`
+                <td id="${file}_${allow_id}_write" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
 
         // READ_EXECUTE PERMISSION GROUP
         if(perm_array[0] == true && perm_array[1] == true && perm_array[2] == true && perm_array[3] == true & perm_array[10] == true) {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+            if (user_state != null && user_state[2] == false) {
+                changed_permissions.push([file, user, 'read_exec'])
+                row.append(`
+                <td id="${file}_${allow_id}_read_exec" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
                 </td>`)
-            special_perm = false
+            }
+            else {
+                row.append(`
+                <td id="${file}_${allow_id}_read_exec" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
         else {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+            if(user_state != null && user_state[2] == true) {
+                changed_permissions.push([file, user, 'read_exec'])
+                row.append(`
+                <td id="${file}_${allow_id}_read_exec" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
                 </td>`)
+            }
+            else {
+                row.append(`
+                <td id="${file}_${allow_id}_read_exec" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
 
         // MODIFY PERMISSION GROUP
         if(perm_array[4] == true && perm_array[5] == true && perm_array[6] == true && perm_array[7] == true && perm_array[8] == true && perm_array[9] == true) {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+            if(user_state != null && user_state[3] == false) {
+                changed_permissions.push([file, user, 'modify'])
+                row.append(`
+                <td id="${file}_${allow_id}_modify" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
                 </td>`)
-            special_perm = false
+            }
+            else {
+                row.append(`
+                <td id="${file}_${allow_id}_modify" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
         else {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+            if(user_state != null && user_state[3] == true) {
+                changed_permissions.push([file, user, 'modify'])
+                row.append(`
+                <td id="${file}_${allow_id}_modify" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
                 </td>`)
+            }
+            else {
+                row.append(`
+                <td id="${file}_${allow_id}_modify" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
 
         // function to determine if elements in an array are true
@@ -618,36 +691,70 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
 
         // FULL CONTROL PERMISSION GROUP
         if(perm_array.every(isTrue)){
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+            if(user_state != null && user_state[4] == false) {
+                changed_permissions.push([file, user, 'full'])
+                row.append(`
+                <td id="${file}_${allow_id}_full" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
                 </td>`)
-            special_perm = false
+            }
+            else {
+                row.append(`
+                <td id="${file}_${allow_id}_full" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
         else {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+            if(user_state != null && user_state[4] == true) {
+                changed_permissions.push([file, user, 'full'])
+                row.append(`
+                <td id="${file}_${allow_id}_full" width="100px" style="text-align:center; background-color: #007fff">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
                 </td>`)
+            }
+            else {
+                row.append(`
+                <td id="${file}_${allow_id}_full" width="100px" style="text-align:center">
+                <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
+                </td>`)
+            }
         }
 
-        // SPECIAL PERMISSIONS
-        if(special_perm == true && perm_array.some(isTrue)){
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
-                </td>`)
-        }
-        else {
-            row.append(`
-                <td id="${id_prefix}_${allow_id}_info_cell" width="100px" style="text-align:center">
-                <span id="${id_prefix}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
-                </td>`)
-        }
         permission_container.append(row)
     }
-    
+
     $('#sidepanel').append(permission_container)
+    changed_permission_color(changed_permissions)
+}
+
+function changed_permission_color(changed_permissions){
+    for(i = 0; i < changed_permissions.length; i++) {
+        changed_div_name = changed_permissions[i][0] + '_' + changed_permissions[i][1] + '_' + changed_permissions[i][2]
+        changed_div = document.getElementById(changed_div_name)
+        if(changed_div != null) {
+            changed_div.style.backgroundColor = "#007fff"
+        }
+    }
+}
+
+document.querySelectorAll('are-you-sure-no-button').forEach(item => {
+    console.log("hello")
+    console.log(item)
+    item.addEventListener('click', event => {
+        console.log("removed")
+    })
+})
+
+function removed_user() {
+    let remove_btns = document.querySelectorAll( '[id^="are-you-sure-no-button"]')
+    console.log(remove_btns.length)
+    for(let y = 0; y < remove_btns.length; y++) {
+        remove_btns[y].addEventListener("click", function handleClick(event) {
+            console.log("removed")
+            console.log(remove_btns[y])
+        })
+    }
 }
 
 //---- misc. ----
