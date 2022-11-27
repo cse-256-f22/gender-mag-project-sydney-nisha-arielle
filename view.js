@@ -5,13 +5,34 @@ let file_array = []
 let file_paths = []
 
 // array of all users
-let user_array = Object.keys(all_users)
+user_array = []
+user_values = Object.values(all_users)
+user_keys = Object.keys(all_users)
+
+for(let i = 0; i < user_values.length; i++) {
+    users = user_values[i]
+
+    if(typeof users == 'object') {
+        group_name = user_keys[i] + ' (Includes: '
+        user_nested = Object.values(users)[1]
+        for(let j = 0; j < user_nested.length - 1; j++) {
+            group_name += user_nested[j] + ', '
+        }
+        let len = user_nested.length
+        group_name += user_nested[len-1] 
+        group_name += ')'
+        user_array.push(group_name)
+    }
+    else {
+        user_array.push(users)
+    }
+}
 
 // array of all effective permissions
 let which_permissions = Object.values(permissions)
 
 // array for permission groups
-let perm_groups = ['Full_Control', 'Modify', 'Read_Execute', 'Write', 'Read']
+let perm_groups = ['Other', 'Delete', 'Full_Control', 'Modify', 'Read_Execute', 'Write', 'Read']
 
 
 // ---- Define your dialogs  and panels here ----
@@ -87,9 +108,10 @@ for(let root_file of root_files) {
 cur_state = []
 $('#sidepanel').empty()
 for (let i = 0; i < file_array.length; i++){
-    file_state = get_cur_file_perm(file_paths[i])
+    file_users = get_file_users(path_to_file[file_paths[i]])
+    file_state = get_cur_file_perm(file_paths[i], Object.keys(file_users))
     cur_state.push(file_state)
-    make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, user_array)
+    make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, Object.keys(file_users))
 }
 
 let checkboxes = document.querySelectorAll('[id^="perm-dialog-ok-button"]')
@@ -97,82 +119,109 @@ for(let y = 0; y < checkboxes.length; y++) {
     checkboxes[y].addEventListener("click", function handleClick(event) {
         $('#sidepanel').empty()
         for (let i = 0; i < file_array.length; i++){
-            make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, user_array, cur_state[i])
+            file_users = get_file_users(path_to_file[file_paths[i]])
+            make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, Object.keys(file_users), cur_state[i])
         }
-        // cur_state = []
-        // for (let i = 0; i < file_array.length; i++) {
-        //     cur_state.push(get_cur_file_perm(file_paths[i]))
-        // }
     })
 }
 
-function get_cur_file_perm(file_path) {
+function get_cur_file_perm(file_path, file_users) {
     let cur_state = []
-    for (let j = 0; j < user_array.length; j++) {
-        user = user_array[j]
-        let perm_array = []
-        for (let k = 0; k < which_permissions.length; k++){
-            let allowUserAction1 = allow_user_action(path_to_file[file_path], all_users[user], which_permissions[k], true);
-            perm_array.push(allowUserAction1.is_allowed)
+    for (let j = 0; j < file_users.length; j++) {
+        user = file_users[j]
+
+        if(user.includes('(')) {
+            user = user.substring(0, user.lastIndexOf('(')).replace(/\s/g, "")
         }
+
+        permissions = get_grouped_permissions(path_to_file[file_path], user)
+        allowed_perms = []
+        denied_perms = []
         user_arr = []
 
-        // READ PERMISSION GROUP
-        if(perm_array[1] == true && perm_array[2] == true && perm_array[3] == true & perm_array[10] == true) {
-            user_arr.push(true)
-            special_perm = false
+        for(var key in permissions['allow']) {
+            allowed_perms.push(key)
+        }
+        for(var key in permissions['deny']) {
+            denied_perms.push(key)
+        }
+
+        // READ PERMISSIONS
+        if(denied_perms.includes('Read')) {
+            user_arr.push('deny')
+        }
+        else if(allowed_perms.includes('Read')) {
+            user_arr.push('allow')
         }
         else {
-            user_arr.push(false)
+            user_arr.push('none')
         }
 
-        // WRITE PERMISSIONS GROUP
-        if(perm_array[4] == true && perm_array[5] == true && perm_array[6] == true && perm_array[7] == true) {
-            user_arr.push(true)
-            special_perm = false
+        // WRITE PERMISSIONS
+        if(denied_perms.includes('Write')) {
+            user_arr.push('deny')
+        }
+        else if(allowed_perms.includes('Write')) {
+            user_arr.push('allow')
         }
         else {
-            user_arr.push(false)
+            user_arr.push('none')
         }
 
-        // READ_EXECUTE PERMISSION GROUP
-        if(perm_array[0] == true && perm_array[1] == true && perm_array[2] == true && perm_array[3] == true & perm_array[10] == true) {
-            user_arr.push(true)
-            special_perm = false
+        // READ_EXECUTE PERMISSIONS
+        if(denied_perms.includes('Read_Execute')) {
+            user_arr.push('deny')
+        }
+        else if(allowed_perms.includes('Read_Execute')) {
+            user_arr.push('allow')
         }
         else {
-            user_arr.push(false)
+            user_arr.push('none')
         }
 
-        // MODIFY PERMISSION GROUP
-        if(perm_array[4] == true && perm_array[5] == true && perm_array[6] == true && perm_array[7] == true && perm_array[8] == true && perm_array[9] == true) {
-            user_arr.push(true)
-            special_perm = false
+        // MODIFY
+        if(denied_perms.includes('Modify')) {
+            user_arr.push('deny')
         }
-        else {
-            user_arr.push(false)
-        }
-
-        // function to determine if elements in an array are true
-        const isTrue = (currentValue) => currentValue == true;
-
-        // FULL CONTROL PERMISSION GROUP
-        if(perm_array.every(isTrue)){
-            user_arr.push(true)
-            special_perm = false
+        else if(allowed_perms.includes('Modify')) {
+            user_arr.push('allow')
         }
         else {
-            user_arr.push(false)
+            user_arr.push('none')
         }
 
-        // SPECIAL PERMISSIONS
-        // if(special_perm == true && perm_array.some(isTrue)){
-        //     user_arr.push(true)
-        // }
+        // FULL CONTROL
+        if(denied_perms.includes('Full_control')) {
+            user_arr.push('deny')
+        }
+        else if(allowed_perms.includes('Full_control')) {
+            user_arr.push('allow')
+        }
+        else {
+            user_arr.push('none')
+        }
 
-        // else {
-        //     user_arr.push(false)
-        // }
+        // DELETE
+        if(denied_perms.includes('Delete')) {
+            user_arr.push('deny')
+        }
+        else if(allowed_perms.includes('Delete')) {
+            user_arr.push('allow')
+        }
+        else {
+            user_arr.push('none')
+        }
+
+        // OTHER
+        if(denied_perms.includes('Other')) {
+            user_arr.push('deny')
+        }
+        else if(allowed_perms.includes('Other')) {
+            user_arr.push('allow')
+        }
+        else {
+            user_arr.push('none')
+        }
 
         cur_state.push(user_arr)
     }
@@ -181,7 +230,7 @@ function get_cur_file_perm(file_path) {
 }
 
 $('#instructions').append("Instructions: Please make all permissions changes by clicking the lock icon below." + 
-" Compare with original permissions listed in the tables to the right")
+" You can view the current permissions in the tables to the right. A cell with '---' signifies that the permission is not specified. As you make changes, the corresponding cells in the table will change color.")
 // make folder hierarchy into an accordion structure
 $('.folder').accordion({
     collapsible: true,
