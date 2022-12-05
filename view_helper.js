@@ -503,8 +503,7 @@ function define_new_user_select_field(id_prefix, select_button_text, on_user_cha
 
 changed_permissions = []
 function make_permission_grids(file, file_path, which_permissions, perm_groups, user_array, cur_state = null) {
-    // console.log(cur_state)
-    console.log(user_array)
+
     let fileNameDiv = $(`<div id="file_name"></div>`)
     fileNameDiv.append("File: " + file)
     $('#sidepanel').append(fileNameDiv)
@@ -551,14 +550,14 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
         permission_container.attr('user', user)
 
         let allow_id = user.replace(/[ \/]/g, '_') 
-        permissions = get_grouped_permissions(path_to_file[file_path], user)
+        permissions1 = get_grouped_permissions(path_to_file[file_path], user)
         allowed_perms = []
         denied_perms = []
 
-        for(var key in permissions['allow']) {
+        for(var key in permissions1['allow']) {
             allowed_perms.push(key)
         }
-        for(var key in permissions['deny']) {
+        for(var key in permissions1['deny']) {
             denied_perms.push(key)
         }
 
@@ -795,7 +794,6 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
     }
 
     $('#sidepanel').append(permission_container)
-    console.log(changed_permissions)
     changed_permission_color(changed_permissions)
 }
 

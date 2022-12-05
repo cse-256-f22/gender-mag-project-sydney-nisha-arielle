@@ -48,9 +48,8 @@ table, th, td {
 
 .no-close .ui-dialog-titlebar-close {
     display: none;
-  
-  
 }
+
 .ui-dialog-titlebar  {
     background: rgb(249, 169, 108) !important;
 }

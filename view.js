@@ -78,7 +78,7 @@ function make_file_element(file_obj) {
         </div>`)
 
         // append children, if any:
-        if( file_hash in parent_to_children) {
+        if(file_hash in parent_to_children) {
             let container_elem = $("<div class='folder_contents'></div>")
             folder_elem.append(container_elem)
             for(child_file of parent_to_children[file_hash]) {
@@ -106,12 +106,11 @@ for(let root_file of root_files) {
 
 // make tables for the permissions of each user for each file
 cur_state = []
-$('#sidepanel').empty()
-for (let i = 0; i < file_array.length; i++){
-    file_users = get_file_users(path_to_file[file_paths[i]])
-    file_state = get_cur_file_perm(file_paths[i], Object.keys(file_users))
+for (let f = 0; f < file_array.length; f++){
+    file_users = get_file_users(path_to_file[file_paths[f]])
+    file_state = get_cur_file_perm(file_paths[f], Object.keys(file_users))
     cur_state.push(file_state)
-    make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, Object.keys(file_users))
+    make_permission_grids(file_array[f], file_paths[f], which_permissions, perm_groups, Object.keys(file_users))
 }
 
 let checkboxes = document.querySelectorAll('[id^="perm-dialog-ok-button"]')
@@ -134,15 +133,15 @@ function get_cur_file_perm(file_path, file_users) {
             user = user.substring(0, user.lastIndexOf('(')).replace(/\s/g, "")
         }
 
-        permissions = get_grouped_permissions(path_to_file[file_path], user)
+        permissions1 = get_grouped_permissions(path_to_file[file_path], user)
         allowed_perms = []
         denied_perms = []
         user_arr = []
 
-        for(var key in permissions['allow']) {
+        for(var key in permissions1['allow']) {
             allowed_perms.push(key)
         }
-        for(var key in permissions['deny']) {
+        for(var key in permissions1['deny']) {
             denied_perms.push(key)
         }
 
