@@ -35,6 +35,8 @@ function make_user_elem(id_prefix, uname, user_attributes=null) {
     user_elem = $(`<div class="ui-widget-content" id="${id_prefix}_${uname}" name="${uname}">
         <span id="${id_prefix}_${uname}_icon" class="oi ${is_user(all_users[uname])?'oi-person':'oi-people'}"/> 
         <span id="${id_prefix}_${uname}_text">${uname} </span>
+        <button > See Permissions </button>
+        <button > Add For Compare </button>
     </div>`)
 
     if (user_attributes) {
@@ -56,6 +58,7 @@ function make_user_list(id_prefix, usermap, add_attributes = false) {
         // make user element; if add_attributes is true, pass along usermap[uname] for attribute creation.
         user_elem = make_user_elem(id_prefix, uname, add_attributes ? usermap[uname] : null )
         u_elements.push(user_elem)
+
     }
     return u_elements
 }
@@ -139,7 +142,7 @@ function define_single_select_list(id_prefix, on_selection_change = function(sel
     return select_list
 }
 
- 
+ //sydney
 // define an element which will display effective permissions for a given file and user
 // It expects the file path to be stored in its *filepath* attribute, 
 // and the user name to be stored in its *username* attribute 
@@ -148,6 +151,7 @@ function define_single_select_list(id_prefix, on_selection_change = function(sel
 // - add_info_col is a boolean for whether you want a third column with "info" buttons (which do nothing by default)
 // - returns the jquery object for the effective permissions panel, ready to be attached/appended anywhere you want it.
 function define_new_effective_permissions(id_prefix, add_info_col = false, which_permissions = null){
+
     // Set up the table:
     let effective_container = $(`<div id="${id_prefix}" class="ui-widget-content" style="overflow-y:scroll"></div>`)
     
@@ -205,10 +209,12 @@ function define_new_effective_permissions(id_prefix, add_info_col = false, which
     return effective_container
 }
 
-
+//sydney
 // define an element which will display *grouped* permissions for a given file and user, and allow for changing them by checking/unchecking the checkboxes.
 function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
+
     // Set up table and header:
+
     let group_table = $(`
     <table id="${id_prefix}" class="ui-widget-content" width="100%">
         <tr id="${id_prefix}_header">
@@ -218,9 +224,11 @@ function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
    
             <th id="${id_prefix}_header_allow">Allow</th>
             <th id="${id_prefix}_header_deny">Deny</th>
+            <th id="${id_prefix}_header_compare">Compare</th>
         </tr>
     </table>
     `)
+   
 
     if(which_groups === null) {
         which_groups = perm_groupnames
@@ -229,7 +237,7 @@ function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
     let noteForMod = " "
     for(let g of which_groups){
         if(g === "Modify"){
-            noteForMod = "*Delete is in advanced permissions*"
+            noteForMod = "*Delete is included in modify*"
         }
         else{
             noteForMod = ""
@@ -242,7 +250,7 @@ function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
 
             
         </tr>`)
-        for(let ace_type of ['allow', 'deny']) {
+        for(let ace_type of ['allow', 'deny', 'compare']) {
             row.append(`<td id="${id_prefix}_${g}_${ace_type}_cell">
                 <input type="checkbox" id="${id_prefix}_${g}_${ace_type}_checkbox" ptype="${ace_type}" class="groupcheckbox" group="${g}" ></input>
             </td>`)
@@ -258,6 +266,7 @@ function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
 
         // get current settings:
         let username = group_table.attr('username')
+        console.log(username)
         let filepath = group_table.attr('filepath')
         // if both properties are set correctly:
         if( username && username.length > 0 && (username in all_users) &&
@@ -296,6 +305,7 @@ function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
     }
     define_attribute_observer(group_table, 'username', update_group_checkboxes)
     define_attribute_observer(group_table, 'filepath', update_group_checkboxes)
+    //sydney define_attribute_observer(group_table, 'compare', update_group_checkboxes)
 
     //Update permissions when checkbox is clicked:
     group_table.find('.groupcheckbox').change(function(){

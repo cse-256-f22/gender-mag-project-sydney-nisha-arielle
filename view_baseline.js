@@ -7,8 +7,8 @@ show_starter_dialogs = false // set this to "false" to disable the survey and 3-
 // Make permissions dialog:
 perm_dialog = define_new_dialog('permdialog', title='Permissions', options = {
     // The following are standard jquery-ui options. See https://jqueryui.com/dialog/
-    height: 500,
-    width: 400,
+    height: 700,
+    width: 600,
     buttons: {
         OK:{
             text: "Confirm Changes",
@@ -55,6 +55,7 @@ perm_add_user_select = define_new_user_select_field('perm_add_user', 'Add a user
         if( file_permission_users.find(`#${expected_user_elem_id}`).length === 0 ) { // if such a user element doesn't already exist
             new_user_elem = make_user_elem('permdialog_file_user', selected_user)
             file_permission_users.append(new_user_elem)
+           
         }
     }    
 })
@@ -170,6 +171,7 @@ define_attribute_observer(perm_dialog, 'filepath', function(){
     grouped_permissions.attr('username', '') // since we are reloading the user list, reset the username in permission checkboxes
     //replace previous user list with the one we just generated:
     file_permission_users.empty()
+    
     file_permission_users.append(file_user_list)
 })
 
