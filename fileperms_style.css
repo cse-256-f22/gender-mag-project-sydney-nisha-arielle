@@ -67,7 +67,7 @@ table, th, td {
 
 #instructions {
     font-size: 1.2rem;
-    font-weight: bold;
+
     font-family:Arial, Helvetica, sans-serif;
 
     background-color: rgba(255, 181, 181, 0.427);
@@ -114,4 +114,5 @@ table, th, td {
 #extraNote{
    color: rgb(148, 1, 1);
 }
+
 

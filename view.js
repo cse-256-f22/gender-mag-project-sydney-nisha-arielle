@@ -228,51 +228,51 @@ function get_cur_file_perm(file_path, file_users) {
     return cur_state
 }
 
-$('#instructions').append("Instructions: Please make all permissions changes by clicking the lock icon below." + 
-" You can view the current permissions in the tables to the right. A cell with '---' signifies that the permission is not specified. As you make changes, the corresponding cells in the table will change color.")
+// $('#instructions').append("Instructions: Please make all permissions changes by clicking the lock icon below." + 
+//" You can view the current permissions in the tables to the right. A cell with '---' signifies that the permission is not specified. As you make changes, the corresponding cells in the table will change color.")
 // make folder hierarchy into an accordion structure
 $('.folder').accordion({
     collapsible: true,
     heightStyle: 'content'
 }) // TODO: start collapsed and check whether read permission exists before expanding?
 
-$('#instructions1').append("<b> <u> Look at all of the direct (not inherited) permissions that are set on this file for this user OR for any groups that this user is part of (e.g. administrators)");
-$('#instructions1').append("<br>");
+// $('#instructions1').append("<b> <u> Look at all of the direct (not inherited) permissions that are set on this file for this user OR for any groups that this user is part of (e.g. administrators)");
 // $('#instructions1').append("<br>");
-$('#instructions1').append("       If any of these are set to deny permission, then permission is denied.");
-$('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
+// $('#instructions1').append("       If any of these are set to deny permission, then permission is denied.");
 // $('#instructions1').append("<br>");
-$('#instructions1').append("       Or, if any of these are set to allow the permission, then the action is allowed to happen.");
-$('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
+// $('#instructions1').append("       Or, if any of these are set to allow the permission, then the action is allowed to happen.");
 // $('#instructions1').append("<br>");
-$('#instructions1').append("<b> <u> If:");
-$('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
+// $('#instructions1').append("<b> <u> If:");
 // $('#instructions1').append("<br>");
-$('#instructions1').append("        there were no direct permissions for this [user, action] combination,");
-$('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
+// $('#instructions1').append("        there were no direct permissions for this [user, action] combination,");
 // $('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
 
-$('#instructions1').append("        AND inheritance is turned on for this file/folder ");
-$('#instructions1').append("<br>");
+// $('#instructions1').append("        AND inheritance is turned on for this file/folder ");
 // $('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
 
-$('#instructions1').append(".. Repeat the process using the permissions for the parent folder.");
+// $('#instructions1').append(".. Repeat the process using the permissions for the parent folder.");
 
 
-$('#instructions1').append("<br>");
 // $('#instructions1').append("<br>");
-$('#instructions1').append("<b> <u> If:");
-$('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
+// $('#instructions1').append("<b> <u> If:");
 // $('#instructions1').append("<br>");
-$('#instructions1').append("        you have exhausted the options available via inheritance");
-$('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
+// $('#instructions1').append("        you have exhausted the options available via inheritance");
 // $('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
 
-$('#instructions1').append("        AND still have not found any relevant permission settings, ");
-$('#instructions1').append("<br>");
+// $('#instructions1').append("        AND still have not found any relevant permission settings, ");
 // $('#instructions1').append("<br>");
+// // $('#instructions1').append("<br>");
 
-$('#instructions1').append("<b> .. then permission is denied.");
+// $('#instructions1').append("<b> .. then permission is denied.");
 
 var pdefbutton = document.createElement("button");
 pdefbutton.innerHTML = "What is Precedence?";

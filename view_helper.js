@@ -212,8 +212,10 @@ function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
     let group_table = $(`
     <table id="${id_prefix}" class="ui-widget-content" width="100%">
         <tr id="${id_prefix}_header">
+           
             <th id="${id_prefix}_header_p" width="99%">Permissions for <span id="${id_prefix}_header_username"></span>
             </th>
+   
             <th id="${id_prefix}_header_allow">Allow</th>
             <th id="${id_prefix}_header_deny">Deny</th>
         </tr>
@@ -224,9 +226,21 @@ function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
         which_groups = perm_groupnames
     }
     // For each permissions group, create a row:
+    let noteForMod = " "
     for(let g of which_groups){
+        if(g === "Modify"){
+            noteForMod = "*Delete is in advanced permissions*"
+        }
+        else{
+            noteForMod = ""
+        }
         let row = $(`<tr id="${id_prefix}_row_${g}">
-            <td id="${id_prefix}_${g}_name">${g}</td>
+        
+            <td id="${id_prefix}_${g}_name">${g} </br> 
+            <span id="extraNote">${noteForMod} </>
+            </td>
+
+            
         </tr>`)
         for(let ace_type of ['allow', 'deny']) {
             row.append(`<td id="${id_prefix}_${g}_${ace_type}_cell">

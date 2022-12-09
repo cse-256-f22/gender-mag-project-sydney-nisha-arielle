@@ -93,8 +93,8 @@
                 <!-- div where file and folder structure will be generated:-->
                 <div id="filestructure">
                     <div id="instructions"></div>
-                    <div id="instructions1"></div>
-                    <div id="instructions2"></div>
+                    <!-- <div id="instructions1"></div>
+                    <div id="instructions2"></div> -->
                     <div id="sideBySide">
                         <div id="fileAccordionDiv"></div>
                         <div id="sidepanel"></div>
@@ -121,7 +121,7 @@
                 </div>
 
                 <!-- structure for the Advanced dialog: -->
-                <div title="Advanced Security Settings" id="advdialog" style="overflow:hidden">
+                <div title="Advanced Security Settings" id="advdialog" style="height:600px;overflow-y:scroll">
                     <div id="advtabs">
                         <ul id="advtabs_titles">
                             <li id="advtab_title_permissions"><a href="#adv_permissions_tab"
@@ -130,21 +130,10 @@
                             <li id="advtab_title_effective"><a href="#adv_effective_tab"
                                     id="adv_effective_tab_elem">Effective Permissions</a></li>
                         </ul>
-                        <div id="adv_permissions_tab">
+                        <div id="adv_permissions_tab" style="height: 600px">
                             <div id="adv_perm_object_name" class="section">Object Name: <span
                                     id="adv_perm_filepath"></span></div>
                             <div id="adv_perm_entries_text">Permission entries:</div>
-                            <div id="adv_perm_table_container" style="height:100px;overflow-y:scroll"
-                                class="ui-widget-content section">
-                                <table id="adv_perm_table" width="100%">
-                                    <tr id="adv_perm_header">
-                                        <th id="adv_perm_header_type">Type</th>
-                                        <th id="adv_perm_header_name">Name</th>
-                                        <th id="adv_perm_header_permission">Permission</th>
-                                        <th id="adv_perm_header_inherited">Inherited from</th>
-                                    </tr>
-                                </table>
-                            </div>
                             <button id="adv_perm_edit" class="ui-button ui-widget ui-corner-all">Edit...</button>
                             <div id="adv_perm_inheritance_div">
                                 <input type="checkbox" id="adv_perm_inheritance" name="inherit">
@@ -157,6 +146,19 @@
                                     id="adv_perm_replace_child_permissions_label">Replace all child object permissions
                                     with inheritable permissions from this object</label>
                             </div>
+                            <div id="adv_perm_table_container" style="height:300px;overflow-y:scroll"
+                                class="ui-widget-content section">
+                                <table id="adv_perm_table" width="100%">
+                                    <tr id="adv_perm_header">
+                                        <th id="adv_perm_header_type">Type</th>
+                                        <th id="adv_perm_header_name">Name</th>
+                                        <th id="adv_perm_header_permission">Permission</th>
+                                        <th id="adv_perm_header_inherited">Inherited from</th>
+                                    </tr>
+                                </table>
+                            </div>
+                           
+                           
                         </div>
                         <div id="adv_owner_tab">
                             <div id="adv_owner_explanation" class="section">You can take or assign ownership of this
@@ -182,7 +184,7 @@
                             </div>
                             <div id="adv_effective_effective_text">Effective permissions:</div>
                             <div id="adv_effective_effective_list" class="ui-widget-content"
-                                style="height:150px;overflow-y:scroll"></div>
+                                style="height:300px;overflow-y:scroll"></div>
                         </div>
                     </div>
                 </div>
@@ -194,15 +196,20 @@
                 <script src="test_model.js"></script>
                 <script id="config-script">
                     const contexts = {
-                        add_full_permissions: 'The user <code>new_manager</code> has just joined the team as a manager. You need to give them complete access to the folder <code>presentation_documents</code>, including the ability to change permissions on that folder.',
-                        add_new_user: 'The user <code>employee4</code> has just joined the team. You need to give them access to the folder <code>presentation_documents</code>. Their new permissions should be the same as the other employees.',
-                        intern_permissions: 'The user <code>intern</code> is a new intern joining the team. They already have read access to the folder <code>important_project</code>. In addition, they need to be able to read and write data, but <em>not</em> delete files, in the folder <code>intern_subproject</code>. Please change the permissions so that they can do this with any files in that folder.',
-                        let_ta_modify: 'The user <code>teaching_assistant</code> is a member of the group <code>students</code>. As the teaching assistant for a course, this user should have the ability to write and modify all files in the folder <code>Lecture_Notes</code>. Other students should be able to read all of these files, but not write or modify them. This was set up correctly at the beginning of the course. But now, for some reason, <code>teaching_assistant</code> is currently unable to modify the file <code>Lecture4.txt</code>. Find and fix the problem.',
-                        lost_inheritance: 'The <code>Lecture_Notes</code> folder was previously set up so that all students could read all the files in it, and the professor and teaching assistant could modify all the files. But now, some of the files are inaccessible to either the students or the instructors. Find and fix the problem.',
-                        remove_direct_permission: 'Your manager emailed you and asked to adjust permissions for the file <code>important_file.txt</code>, so that the user <code>employee3</code> is no longer able to make changes to the file.',
-                        remove_inherited_permission: 'Your manager emailed you and asked to adjust permissions for the file <code>important_file.txt</code>, so that the user <code>employee3</code> is no longer able to make changes to the file.',
-                        remove_user_with_inheritance: 'The user <code>employee3</code> has recently been fired. Please remove this user entirely from the permission settings for <code>important_file.txt</code>.',
-                        restrict_group_member: 'Your manager emailed you and asked to adjust permissions for the file <code>important_file.txt</code>, so that the user <code>employee3</code> is no longer able to make changes to the file. (All employees are members of the <code>employees</code> group)',
+                        add_full_permissions: 'The user <code>new_manager</code> has just joined the team as a manager. You need to give them <b>complete access </b> to the folder <code>presentation_documents</code>, including the ability to <b> change permissions </b> on that folder.',
+                        add_new_user: 'The user <code>employee4</code> has just joined the team. You need to give them access to the folder <code>presentation_documents</code>. Their new permissions should be the <b>same</b> as the other employees.',
+                        intern_permissions: 'The user <code>intern</code> is a new intern joining the team. They already have read access to the folder <code>important_project</code>. In addition, they need to be able to <b>read and write</b> data, but <em>not delete</em> files, in the folder <code>intern_subproject</code>. Please change the permissions so that they can do this with any files in that folder.',
+                        
+                        let_ta_modify: 'The user <code>teaching_assistant</code> is a member of the group <code>students</code>. As the teaching assistant for a course, this user should have the ability to <b>write and modify</b> all files in the folder <code>Lecture_Notes</code>. Other students should be able to <b>read</b> all of these files, but not write or modify them. This was set up correctly at the beginning of the course. But now, for some reason, <code>teaching_assistant</code> is currently unable to modify the file <code>Lecture4.txt</code>. Find and fix the problem.',
+                        
+                        lost_inheritance: 'The <code>Lecture_Notes</code> folder was previously set up so that all students could <b>read </b> all the files in it, and the professor and teaching assistant could <b>modify</b> all the files. But now, some of the files are inaccessible to either the students or the instructors. Find and fix the problem.',
+                        
+                        remove_direct_permission: 'Your manager emailed you and asked to adjust permissions for the file <code>important_file.txt</code>, so that the user <code>employee3</code> is <b>no longer able to make changes</b> to the file.',
+                        
+                        remove_inherited_permission: 'Your manager emailed you and asked to adjust permissions for the file <code>important_file.txt</code>, so that the user <code>employee3</code> is <b>no longer able to make changes</b> to the file.',
+                        
+                        remove_user_with_inheritance: 'The user <code>employee3</code> has recently been fired. Please <b> remove this user entirely </b> from the permission settings for <code>important_file.txt</code>.',
+                        restrict_group_member: 'Your manager emailed you and asked to adjust permissions for the file <code>important_file.txt</code>, so that the user <code>employee3</code> is <b>no longer able to make changes</b> to the file. (All employees are members of the <code>employees</code> group)',
                     };
 
                     const params = new URLSearchParams(window.location.search);
@@ -212,6 +219,7 @@
                     const context = contexts[tag];
                     contextElem.dataset['tag'] = tag;
                     contextElem.innerHTML = context;
+                    document.getElementById('instructions').innerHTML = "Task: " + context;
 
                     const xhrObj = new XMLHttpRequest();
                     xhrObj.open('GET', './scenario-configs/' + tag + '.js', false);
