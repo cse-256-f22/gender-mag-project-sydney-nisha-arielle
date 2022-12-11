@@ -78,7 +78,7 @@ function make_file_element(file_obj) {
                     <span class="oi oi-lock-unlocked" id="${file_hash}_permicon"/> 
                 </button>
                 
-                <button class="ui-button ui-widget ui-corner-all compare_permissions" file="${file_obj.filename}" path="${file_hash}" id="${file_hash}_permbutton"> 
+                <button class="ui-button ui-widget ui-corner-all compare_permissions" status="hide" file="${file_obj.filename}" path="${file_hash}" id="${file_hash}_permbutton"> 
                     COMPARE
                     <span class="fa fa-arrow-right" id="${file_hash}_compareicon"/> 
                 </button>
@@ -103,7 +103,7 @@ function make_file_element(file_obj) {
                 EDIT PERMISSIONS 
                 <span class="oi oi-lock-unlocked" id="${file_hash}_permicon"/> 
             </button>
-            <button class="ui-button ui-widget ui-corner-all compare_permissions" file="${file_obj.filename}" path="${file_hash}" id="${file_hash}_comparebutton"> 
+            <button class="ui-button ui-widget ui-corner-all compare_permissions" show="False" file="${file_obj.filename}" path="${file_hash}" id="${file_hash}_comparebutton"> 
                 COMPARE
                 <span class="fa fa-arrow-right" id="${file_hash}_compareicon"/> 
             </button>
@@ -121,15 +121,15 @@ function make_file_element(file_obj) {
 //         </div>`)
 // }
 
-// for(let root_file of root_files) {
-//     let file_elem = make_file_element(root_file)
-//     $( "#fileAccordionDiv" ).append(file_elem);  
-// }
-
-for(let user of user_array) {
-    let user_elem = make_user_elem(user)
-    $( "#compare_users" ).append(user_elem);    
+for(let root_file of root_files) {
+    let file_elem = make_file_element(root_file)
+    $( "#fileAccordionDiv" ).append(file_elem);  
 }
+
+// for(let user of user_array) {
+//     let user_elem = make_user_elem(user)
+//     $( "#compare_users" ).append(user_elem);    
+// }
 
 // make tables for the permissions of each user for each file
 cur_state = []
@@ -160,6 +160,7 @@ function compare_permission_grid(compare_files, compare_paths, cur_state) {
         $('#sidepanel').append(perm_grid)
     }
 }
+
 function get_cur_file_perm(file_path, file_users) {
     let cur_state = []
     for (let j = 0; j < file_users.length; j++) {
@@ -356,9 +357,24 @@ $('.compare_permissions').click( function( e ) {
     // Set the path and open dialog:
     let path = e.currentTarget.getAttribute('path');
     let file = e.currentTarget.getAttribute('file');
-    compare_files.push(file)
-    compare_paths.push(path)
-
+    console.log(e.currentTarget.getAttribute('status'))
+    if((e.currentTarget.getAttribute('status')) == "hide") {
+        compare_files.push(file)
+        compare_paths.push(path)
+        e.currentTarget.setAttribute('status', 'show')
+        e.currentTarget.innerHTML = `HIDE <span class="fa fa-arrow-left" id="${path}_compareicon"/>`
+    }
+    else {
+        e.currentTarget.setAttribute('status', 'hide')
+        for( var i = 0; i < compare_files.length; i++){ 
+            if ( compare_files[i] === e.currentTarget.getAttribute('file')) { 
+                compare_files.splice(i, 1); 
+                compare_paths.splice(i, 1)
+            }
+        }
+        e.currentTarget.innerHTML = `COMPARE <span class="fa fa-arrow-right" id="${path}_compareicon"/>`
+    }
+    console.log("done")
     compare_permission_grid(compare_files, compare_paths, cur_state)
 });
 
