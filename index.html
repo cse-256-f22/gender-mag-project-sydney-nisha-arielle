@@ -92,7 +92,49 @@
             <div data-app="gender-mag" data-mode="tracker" id="html-loc" data-tag="">
                 <!-- div where file and folder structure will be generated:-->
                 <div id="filestructure">
-                    <div id="instructions"></div>
+                    <div id="instructions">
+                        <h2 style="text-align: center;"><b><u>Instructions</u></b></h2>
+                        <p>
+                            Below you will see a simplified file system management interface and a task. Pretend that you are an administrator for this file system. 
+                            Your responsibility is to maintain correct file permissions for a given task.
+                        </p>
+                    </div>
+                    <div id="task">
+                        <h3 style="text-align: center;"><b><u>Your Task:</u></b></h3>
+                    </div>
+                    <div id="notes">
+                        <h3><b><u>Interface Notes</u></b></h3>
+                        <p>
+                            The <u>left side</u> of the interface contains the file structure, with folders highlighted in blue. 
+                            Click the "Edit Permissions" button next to a file to edit the permissions for that file.
+                        </p>
+                        <br>
+                        <p>
+                            The <u>right side</u> of the interface contains grids for each folder/file. In each table is a list of the users with access to the file/folder and the permissions for each user.
+                            <b>"Allow"</b> indicates that the user has that permission for a file, <b>"Deny"</b>> indicates the user does not have that permission and <b>"---"</b> indicates the user's permission for a file has not been specified (neither allowed or denied).
+                            As you change permissions for users, those changes will be reflected in background color of the impacted grid cells, which will turn blue.
+                            If a cell has purple highlighting, it is an inherited permission. Click the button below to learn about "Inheritance" and "Precedence".
+                        </p>
+                    </div>
+                    <button id="explanation">
+                        Interitance and Precendence
+                    </button>
+                    <div id="myModal" class="modal">
+
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                          <span class="close">&times;</span>
+                            <u><b><h3 style="text-align: center;">Inheritance</h3></b></u>
+                            <p>Parent folders have child folders underneath them. 
+                                <span style="color: rgb(0, 127, 255);">Changing the permissions of a parent folder changes the same permissions for its child folders and files.</span></p>
+                            <br/>
+                            <u><b><h3 style="text-align: center;">Precedence</h3></b></u>
+                            <span style="color: rgb(0, 127, 255);">Closer permissions take precedence over ones that are further away. </span>
+                            Ex: Direct allow takes precedence over inherited deny. 
+                            <span style="color: rgb(0, 127, 255);">Deny permissions also take precendence over allow permissions.</span>
+                        </div>
+                      
+                      </div>
                     <!-- <div id="instructions1"></div>
                     <div id="instructions2"></div> -->
                     <div id="sideBySide">
@@ -219,7 +261,32 @@
                     const context = contexts[tag];
                     contextElem.dataset['tag'] = tag;
                     contextElem.innerHTML = context;
-                    document.getElementById('instructions').innerHTML = "Task: " + context;
+                    document.getElementById('task').innerHTML += context;
+                    // Get the modal
+                    var modal = document.getElementById("myModal");
+
+                    // Get the button that opens the modal
+                    var btn = document.getElementById("explanation");
+
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementsByClassName("close")[0];
+
+                    // When the user clicks on the button, open the modal 
+                    btn.onclick = function() {
+                        modal.style.display = "block";
+                    }
+
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function() {
+                        modal.style.display = "none";
+                    }
+
+                    // When the user clicks anywhere outside of the modal, close it
+                    window.onclick = function(event) {
+                        if (event.target == modal) {
+                            modal.style.display = "none";
+                        }
+                    }
 
                     const xhrObj = new XMLHttpRequest();
                     xhrObj.open('GET', './scenario-configs/' + tag + '.js', false);

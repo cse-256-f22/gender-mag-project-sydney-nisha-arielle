@@ -524,7 +524,7 @@ function define_new_user_select_field(id_prefix, select_button_text, on_user_cha
     return sel_section
 }
 
-
+inherited_permissions = []
 changed_permissions = []
 function make_permission_grids(file, file_path, which_permissions, perm_groups, user_array, cur_state = null) {
 
@@ -579,7 +579,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
         denied_perms = []
 
         for(var key in permissions1['allow']) {
-            allowed_perms.push(key)
+            allowed_perms.push(key, permissions1['allow'][key]['inherited'])
         }
         for(var key in permissions1['deny']) {
             denied_perms.push(key)
@@ -592,22 +592,34 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
         
         // READ PERMISSIONS
         if(denied_perms.includes('Read')) {
+            index = denied_perms.indexOf('Read')
+            if(denied_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'read'])
+            }
+
             if(user_state != null && user_state[0] != 'deny'){
                 changed_permissions.push([file, user, 'read'])
             }
+
             row.append(`
             <td id="${file}_${allow_id}_read" width="100px" style="text-align:center">
-            <p> Deny </p>
+            <p id="${file}_${allow_id}_read_text"> Deny </p>
             <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
             </td>`)
         }
         else if(allowed_perms.includes('Read')) {
+            index = allowed_perms.indexOf('Read')
+            if(allowed_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'read'])
+            }
+
             if(user_state != null && user_state[0] != 'allow') {
                 changed_permissions.push([file, user, 'read'])
             }
+
             row.append(`
             <td id="${file}_${allow_id}_read" width="100px" style="text-align:center">
-            <p> Allow </p>
+            <p id="${file}_${allow_id}_read_text"> Allow </p>
             <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
             </td>`)
         }
@@ -615,6 +627,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
             if(user_state != null && user_state[0] != 'none') {
                 changed_permissions.push([file, user, 'read'])
             }
+
             row.append(`
             <td id="${file}_${allow_id}_read" width="100px" style="text-align:center">
             <p> --- </p>
@@ -624,22 +637,34 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
 
         // WRITE PERMISSIONS
         if(denied_perms.includes('Write')) {
+            index = denied_perms.indexOf('Write')
+            if(denied_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'write'])
+            }
+
             if(user_state != null && user_state[1] != 'deny') {
                 changed_permissions.push([file, user, 'write'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_write" width="100px" style="text-align:center">
-                <p> Deny </p>
+                <p id="${file}_${allow_id}_write_text"> Deny </p>
                 <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
                 </td>`)
         }
         else if(allowed_perms.includes('Write')) {
+            index = allowed_perms.indexOf('Write')
+            if(allowed_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'write'])
+            }
+
             if(user_state != null && user_state[1] != 'allow') {
                 changed_permissions.push([file, user, 'write'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_write" width="100px" style="text-align:center">
-                <p> Allow </p>
+                <p id="${file}_${allow_id}_read_text"> Allow </p>
                 <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
                 </td>`)
         }
@@ -647,6 +672,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
             if(user_state != null && user_state[1] != 'none') {
                 changed_permissions.push([file, user, 'write'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_write" width="100px" style="text-align:center">
                 <p> --- </p>
@@ -656,12 +682,18 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
 
         // READ_EXECUTE PERMISSIONS
         if(denied_perms.includes('Read_Execute')) {
+            index = denied_perms.indexOf('Read_Execute')
+            if(denied_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'read_exec'])
+            }
+
             if(user_state != null && user_state[2] != 'deny') {
                 changed_permissions.push([file, user, 'read_exec'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_read_exec" width="100px" style="text-align:center">
-                <p> Deny </p>
+                <p id="${file}_${allow_id}_read_exec_text"> Deny </p>
                 <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
                 </td>`)
         }
@@ -669,9 +701,10 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
             if(user_state != null && user_state[2] != 'allow') {
                 changed_permissions.push([file, user, 'read_exec'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_read_exec" width="100px" style="text-align:center">
-                <p> Allow </p>
+                <p id="${file}_${allow_id}_read_exec_text"> Allow </p>
                 <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
                 </td>`)
         }
@@ -688,22 +721,34 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
 
         // MODIFY
         if(denied_perms.includes('Modify')) {
+            index = denied_perms.indexOf('Modify')
+            if(denied_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'modify'])
+            }
+
             if(user_state != null && user_state[3] != 'deny') {
                 changed_permissions.push([file, user, 'modify'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_modify" width="100px" style="text-align:center">
-                <p> Deny </p>
+                <p id="${file}_${allow_id}_modify_text"> Deny </p>
                 <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
                 </td>`)
         }
         else if(allowed_perms.includes('Modify')) {
+            index = allowed_perms.indexOf('Modify')
+            if(allowed_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'modify'])
+            }
+
             if(user_state != null && user_state[3] != 'allow') {
                 changed_permissions.push([file, user, 'modify'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_modify" width="100px" style="text-align:center">
-                <p> Allow </p>
+                <p id="${file}_${allow_id}_modify_text"> Allow </p>
                 <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
                 </td>`)
         }
@@ -711,6 +756,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
             if(user_state != null && user_state[3] != 'none') {
                 changed_permissions.push([file, user, 'modify'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_modify" width="100px" style="text-align:center">
                 <p> --- </p>
@@ -720,22 +766,34 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
 
         // FULL CONTROL
         if(denied_perms.includes('Full_control')) {
+            index = denied_perms.indexOf('Full_control')
+            if(denied_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'full'])
+            }
+
             if(user_state != null && user_state[4] != 'deny') {
                 changed_permissions.push([file, user, 'full'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_full" width="100px" style="text-align:center">
-                <p> Deny </p>
+                <p id="${file}_${allow_id}_full_text"> Deny </p>
                 <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
                 </td>`)
         }
         else if(allowed_perms.includes('Full_control')) {
+            index = allowed_perms.indexOf('Full_control')
+            if(allowed_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'full'])
+            }
+
             if(user_state != null && user_state[4] != 'allow') {
                 changed_permissions.push([file, user, 'full'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_full" width="100px" style="text-align:center">
-                <p> Allow </p>
+                <p id="${file}_${allow_id}_full_text"> Allow </p>
                 <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
                 </td>`)
         }
@@ -743,6 +801,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
             if(user_state != null && user_state[4] != 'none') {
                 changed_permissions.push([file, user, 'full'])
             }
+
             row.append(`
                 <td id="${file}_${allow_id}_full" width="100px" style="text-align:center">
                 <p> --- </p>
@@ -752,22 +811,34 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
 
         // DELETE PERMISSIONS
         if(denied_perms.includes('Delete')) {
+            index = denied_perms.indexOf('Delete')
+            if(denied_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'delete'])
+            }
+
             if(user_state != null && user_state[5] != 'deny'){
                 changed_permissions.push([file, user, 'delete'])
             }
+
             row.append(`
             <td id="${file}_${allow_id}_delete" width="100px" style="text-align:center">
-            <p> Deny </p>
+            <p id="${file}_${allow_id}_delete_text"> Deny </p>
             <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
             </td>`)
         }
         else if(allowed_perms.includes('Delete')) {
+            index = allowed_perms.indexOf('Delete')
+            if(allowed_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'delete'])
+            }
+
             if(user_state != null && user_state[5] != 'allow') {
                 changed_permissions.push([file, user, 'delete'])
             }
+
             row.append(`
             <td id="${file}_${allow_id}_delete" width="100px" style="text-align:center">
-            <p> Allow </p>
+            <p id="${file}_${allow_id}_delete_text"> Allow </p>
             <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
             </td>`)
         }
@@ -775,6 +846,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
             if(user_state != null && user_state[5] != 'none') {
                 changed_permissions.push([file, user, 'delete'])
             }
+
             row.append(`
             <td id="${file}_${allow_id}_delete" width="100px" style="text-align:center">
             <p> --- </p>
@@ -784,22 +856,34 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
 
         // OTHER PERMISSIONS
         if(denied_perms.includes('Other')) {
+            index = denied_perms.indexOf('Other')
+            if(denied_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'other'])
+            }
+
             if(user_state != null && user_state[6] != 'deny'){
                 changed_permissions.push([file, user, 'other'])
             }
+
             row.append(`
             <td id="${file}_${allow_id}_other" width="100px" style="text-align:center">
-            <p> Deny </p>
+            <p id="${file}_${allow_id}_other_text"> Deny </p>
             <span id="${file}_${allow_id}_info_icon" class="fa fa-times" setting_container_id="${id_prefix}"/>
             </td>`)
         }
         else if(allowed_perms.includes('Other')) {
+            index = allowed_perms.indexOf('Other')
+            if(allowed_perms[index+1] == true) {
+                inherited_permissions.push([file, user, 'other'])
+            }
+
             if(user_state != null && user_state[6] != 'allow') {
                 changed_permissions.push([file, user, 'other'])
             }
+
             row.append(`
             <td id="${file}_${allow_id}_other" width="100px" style="text-align:center">
-            <p> Allow </p>
+            <p id="${file}_${allow_id}_other_text"> Allow </p>
             <span id="${file}_${allow_id}_info_icon" class="fa fa-check" setting_container_id="${id_prefix}"/>
             </td>`)
         }
@@ -807,6 +891,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
             if(user_state != null && user_state[6] != 'none') {
                 changed_permissions.push([file, user, 'other'])
             }
+
             row.append(`
             <td id="${file}_${allow_id}_other" width="100px" style="text-align:center">
             <p> --- </p>
@@ -819,6 +904,7 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
 
     $('#sidepanel').append(permission_container)
     changed_permission_color(changed_permissions)
+    inheritied_permission_color(inherited_permissions)
 }
 
 function changed_permission_color(changed_permissions){
@@ -827,6 +913,17 @@ function changed_permission_color(changed_permissions){
         changed_div = document.getElementById(changed_div_name)
         if(changed_div != null) {
             changed_div.style.backgroundColor = "#007fff"
+        }
+    }
+}
+
+function inheritied_permission_color(inherited_permissions){
+    for(i = 0; i < inherited_permissions.length; i++) {
+        changed_div_name = inherited_permissions[i][0] + '_' + inherited_permissions[i][1] + '_' + inherited_permissions[i][2] + '_text'
+        changed_div = document.getElementById(changed_div_name)
+        if(changed_div != null) {
+            changed_div.style.backgroundColor = "rgb(204, 153, 255, 0.5)"
+            // changed_div.classList.add("fa-arrow-up")
         }
     }
 }
