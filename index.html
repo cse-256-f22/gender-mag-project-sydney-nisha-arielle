@@ -103,17 +103,22 @@
                         <h3 style="text-align: center;"><b><u>Your Task:</u></b></h3>
                     </div>
                     <div id="notes">
-                        <h3><b><u>Interface Notes</u></b></h3>
+                        <h3><b><u>How to edit</u></b></h3>
                         <p>
-                            The <u>left side</u> of the interface contains the file structure, with folders highlighted in blue. 
+                            The <em>left side</em> of the interface contains the file structure, with folders highlighted in blue. 
                             Click the "Edit Permissions" button next to a file to edit the permissions for that file.
                         </p>
                         <br>
+                        <h3><b><u>How to compare permissions</u></b></h3>
                         <p>
-                            The <u>right side</u> of the interface contains grids for each folder/file. In each table is a list of the users with access to the file/folder and the permissions for each user.
-                            <b>"Allow"</b> indicates that the user has that permission for a file, <b>"Deny"</b> indicates the user does not have that permission and <b>"---"</b> indicates the user's permission for a file has not been specified (neither allowed or denied).
-                            As you change permissions for users, those changes will be reflected in background color of the impacted grid cells, which will turn blue.
-                            If a cell has purple highlighting, it is an inherited permission. Click the button below to learn about "Inheritance" and "Precedence".
+                         <em>Clicking compare</em> on a file will show the user permissions for that file in a <em>table</em>. 
+                        </p> 
+                        <br/> <h3><b><u>Table Key</u></b></h3>
+                        <p>
+                     <em> Table contains:</em> each user with access to the file/folder and their permissions.
+                         <br>   <b>"Allow"</b>: user has that permission for a file <br> <b>"Deny"</b>: user does not have that permission <br> <b>"---"</b>: user's permission for a file has not been specified (neither allowed or denied).
+                          <br>  <b>Blue cells</b>: permission has been changed 
+                          <br> <b>Purple highlighting</b>: inherited permission. Click the button below to learn about "Inheritance" and "Precedence".
                         </p>
                     </div>
                     <button id="explanation" class="modal-btn">

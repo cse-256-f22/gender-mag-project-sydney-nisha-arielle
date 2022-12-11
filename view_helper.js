@@ -35,8 +35,7 @@ function make_user_elem(id_prefix, uname, user_attributes=null) {
     user_elem = $(`<div class="ui-widget-content" id="${id_prefix}_${uname}" name="${uname}">
         <span id="${id_prefix}_${uname}_icon" class="oi ${is_user(all_users[uname])?'oi-person':'oi-people'}"/> 
         <span id="${id_prefix}_${uname}_text">${uname} </span>
-        <button > See Permissions </button>
-        <button > Add For Compare </button>
+      
     </div>`)
 
     if (user_attributes) {
@@ -224,7 +223,7 @@ function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
    
             <th id="${id_prefix}_header_allow">Allow</th>
             <th id="${id_prefix}_header_deny">Deny</th>
-            <th id="${id_prefix}_header_compare">Compare</th>
+          
         </tr>
     </table>
     `)
@@ -250,7 +249,7 @@ function define_grouped_permission_checkboxes(id_prefix, which_groups = null) {
 
             
         </tr>`)
-        for(let ace_type of ['allow', 'deny', 'compare']) {
+        for(let ace_type of ['allow', 'deny']) {
             row.append(`<td id="${id_prefix}_${g}_${ace_type}_cell">
                 <input type="checkbox" id="${id_prefix}_${g}_${ace_type}_checkbox" ptype="${ace_type}" class="groupcheckbox" group="${g}" ></input>
             </td>`)
