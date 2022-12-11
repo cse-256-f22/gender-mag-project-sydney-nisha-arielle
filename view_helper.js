@@ -902,9 +902,10 @@ function make_permission_grids(file, file_path, which_permissions, perm_groups, 
         permission_container.append(row) 
     }
 
-    $('#sidepanel').append(permission_container)
+    // $('#sidepanel').append(permission_container)
     changed_permission_color(changed_permissions)
     inheritied_permission_color(inherited_permissions)
+    return permission_container
 }
 
 function changed_permission_color(changed_permissions){

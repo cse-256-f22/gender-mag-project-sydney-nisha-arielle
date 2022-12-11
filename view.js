@@ -28,6 +28,9 @@ for(let i = 0; i < user_values.length; i++) {
     }
 }
 
+compare_files = []
+compare_paths = []
+
 // array of all effective permissions
 let which_permissions = Object.values(permissions)
 
@@ -74,6 +77,11 @@ function make_file_element(file_obj) {
                     EDIT PERMISSIONS
                     <span class="oi oi-lock-unlocked" id="${file_hash}_permicon"/> 
                 </button>
+                
+                <button class="ui-button ui-widget ui-corner-all compare_permissions" file="${file_obj.filename}" path="${file_hash}" id="${file_hash}_permbutton"> 
+                    COMPARE
+                    <span class="fa fa-arrow-right" id="${file_hash}_compareicon"/> 
+                </button>
             </h3>
         </div>`)
 
@@ -95,13 +103,32 @@ function make_file_element(file_obj) {
                 EDIT PERMISSIONS 
                 <span class="oi oi-lock-unlocked" id="${file_hash}_permicon"/> 
             </button>
+            <button class="ui-button ui-widget ui-corner-all compare_permissions" file="${file_obj.filename}" path="${file_hash}" id="${file_hash}_comparebutton"> 
+                COMPARE
+                <span class="fa fa-arrow-right" id="${file_hash}_compareicon"/> 
+            </button>
         </div>`)
     }
 }
 
-for(let root_file of root_files) {
-    let file_elem = make_file_element(root_file)
-    $( "#fileAccordionDiv" ).append( file_elem);    
+// function make_user_elem(user) {
+//     return $(`<div class='file'  id="${user}_div">
+//             <h3> ${user} <h3/>
+//             <button class="ui-button ui-widget ui-corner-all compare_permissions" user="${user} id="${user}_comparebutton"> 
+//                 COMPARE
+//                 <span class="fa fa-arrow-right" id="${user}_compareicon"/> 
+//             </button>
+//         </div>`)
+// }
+
+// for(let root_file of root_files) {
+//     let file_elem = make_file_element(root_file)
+//     $( "#fileAccordionDiv" ).append(file_elem);  
+// }
+
+for(let user of user_array) {
+    let user_elem = make_user_elem(user)
+    $( "#compare_users" ).append(user_elem);    
 }
 
 // make tables for the permissions of each user for each file
@@ -110,20 +137,29 @@ for (let f = 0; f < file_array.length; f++){
     file_users = get_file_users(path_to_file[file_paths[f]])
     file_state = get_cur_file_perm(file_paths[f], Object.keys(file_users))
     cur_state.push(file_state)
-    make_permission_grids(file_array[f], file_paths[f], which_permissions, perm_groups, Object.keys(file_users))
+    // make_permission_grids(file_array[f], file_paths[f], which_permissions, perm_groups, Object.keys(file_users))
 }
+
 
 let checkboxes = document.querySelectorAll('[id^="perm-dialog-ok-button"]')
 for(let y = 0; y < checkboxes.length; y++) {
     checkboxes[y].addEventListener("click", function handleClick(event) {
-        $('#sidepanel').empty()
-        for (let i = 0; i < file_array.length; i++){
-            file_users = get_file_users(path_to_file[file_paths[i]])
-            make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, Object.keys(file_users), cur_state[i])
-        }
+        // for (let i = 0; i < file_array.length; i++){
+        //     file_users = get_file_users(path_to_file[file_paths[i]])
+        //     perm_grid = make_permission_grids(file_array[i], file_paths[i], which_permissions, perm_groups, Object.keys(file_users), cur_state[i])
+        // }
+        compare_permission_grid(compare_files, compare_paths, cur_state)
     })
 }
 
+function compare_permission_grid(compare_files, compare_paths, cur_state) {
+    $('#sidepanel').empty()
+    for(let i = 0; i < compare_files.length; i++) {
+        file_users = get_file_users(path_to_file[compare_paths[i]])
+        perm_grid = make_permission_grids(compare_files[i], compare_paths[i], which_permissions, perm_groups, Object.keys(file_users), cur_state[i])
+        $('#sidepanel').append(perm_grid)
+    }
+}
 function get_cur_file_perm(file_path, file_users) {
     let cur_state = []
     for (let j = 0; j < file_users.length; j++) {
@@ -232,7 +268,7 @@ function get_cur_file_perm(file_path, file_users) {
 //" You can view the current permissions in the tables to the right. A cell with '---' signifies that the permission is not specified. As you make changes, the corresponding cells in the table will change color.")
 // make folder hierarchy into an accordion structure
 $('.folder').accordion({
-    collapsible: true,
+    collapsible: false,
     heightStyle: 'content'
 }) // TODO: start collapsed and check whether read permission exists before expanding?
 
@@ -314,6 +350,16 @@ $('.permbutton').click( function( e ) {
     e.stopPropagation() // don't propagate button click to element underneath it (e.g. folder accordion)
     // Emit a click for logging purposes:
     emitter.dispatchEvent(new CustomEvent('userEvent', { detail: new ClickEntry(ActionEnum.CLICK, (e.clientX + window.pageXOffset), (e.clientY + window.pageYOffset), e.target.id,new Date().getTime()) }))
+});
+
+$('.compare_permissions').click( function( e ) {
+    // Set the path and open dialog:
+    let path = e.currentTarget.getAttribute('path');
+    let file = e.currentTarget.getAttribute('file');
+    compare_files.push(file)
+    compare_paths.push(path)
+
+    compare_permission_grid(compare_files, compare_paths, cur_state)
 });
 
 
